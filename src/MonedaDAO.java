@@ -7,5 +7,4 @@ public interface MonedaDAO {
 
     Moneda ListarPorNomenclatura(String nomenclatura);
 
-    void generarStock();
 }

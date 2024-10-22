@@ -22,10 +22,4 @@ public class MonedaDaoImpl implements MonedaDAO {
         throw new UnsupportedOperationException("Unimplemented method 'ListarPorNomenclatura'");
     }
 
-    @Override
-    public void generarStock() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generarStock'");
-    }
-
 }
