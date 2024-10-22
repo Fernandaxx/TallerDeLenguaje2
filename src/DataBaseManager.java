@@ -127,7 +127,7 @@ public class DataBaseManager {
 
                                         MonedaDAO monedita = new MonedaDaoImpl();
 
-                                        Moneda moneda = new Moneda('a', "arcano", "adc", 15.56, 0.3, 22.43);
+                                        Moneda moneda = new Moneda('b', "algo", "uwu", 15.546, 0.3, 344.9);
 
                                         monedita.crearMonedas(moneda);
 
@@ -143,6 +143,9 @@ public class DataBaseManager {
                                 case 4:
                                         System.out.println("Usuario opina 4.");
                                         System.out.println("Llamar a funcion 4.");
+
+                                        MonedaDAO monedaa = new MonedaDaoImpl();
+                                        monedaa.ListarStock();
                                         break;
                                 case 5:
                                         System.out.println("Usuario opina 5.");

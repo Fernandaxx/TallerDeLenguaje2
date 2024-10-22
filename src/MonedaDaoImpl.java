@@ -88,7 +88,7 @@ public class MonedaDaoImpl implements MonedaDAO {
             while (rs.next()) {
                 double stock = rs.getDouble("STOCK");
 
-                System.out.println("cant = " + stock);
+                System.out.println("STOCK = " + stock);
 
                 System.out.println();
             }
