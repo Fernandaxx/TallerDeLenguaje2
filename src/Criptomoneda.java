@@ -7,7 +7,7 @@
  * @version 1.0
  * @since 2024
  */
-public class Criptomoneda {
+public class Criptomoneda extends Moneda {
     private String nombre;
     private String sigla;
     private double cantidad;

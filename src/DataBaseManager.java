@@ -10,9 +10,9 @@ public class DataBaseManager {
          * @param connection objeto conexion a la base de datos SQLite
          * @throws SQLException
          */
-        private static void creaciónDeTablasEnBD(Connection connection) throws SQLException {
-                Statement stmt;
-                stmt = connection.createStatement();
+        private static void creaciónDeTablasEnBD(Connection connection, Statement stmt) throws SQLException {
+
+                // stmt = connection.createStatement();
                 String sql = "CREATE TABLE MONEDA "
                                 + "("
                                 + " TIPO       VARCHAR(1)    NOT NULL, "
@@ -42,12 +42,24 @@ public class DataBaseManager {
 
         public static void main(String args[]) {
                 Connection c = null;
-
+                Statement stmt = null;
                 try {
+                        System.err.println("Aqui");
                         Class.forName("org.sqlite.JDBC");
                         c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
+                        System.err.println("Aqui");
+                        c.setAutoCommit(false);
                         System.out.println("Opened database successfully");
-                        creaciónDeTablasEnBD(c);
+                        stmt = c.createStatement();
+                        // creaciónDeTablasEnBD(c, stmt);
+
+                        String sql = "INSERT INTO ACTIVO_CRIPTO (NOMENCLATURA,CANTIDAD) " +
+                                        "VALUES ('BTC', 5);";
+                        stmt.executeUpdate(sql);
+                        stmt.close();
+                        c.commit();
+                        c.close();
+
                 } catch (Exception e) {
                         System.err.println(e.getClass().getName() + ": " + e.getMessage());
                         System.exit(0);
