@@ -1,10 +1,14 @@
 import java.util.List;
 
 public interface MonedaDAO {
-    void CrearMonedas(Moneda moneda);
+    void crearMonedas(Moneda moneda);
 
     List<Moneda> listarMonedas();
 
     Moneda ListarPorNomenclatura(String nomenclatura);
+
+    void actualizarStock(String nomenclatura, double nuevoStock);
+
+    List<Double> ListarStock();
 
 }
