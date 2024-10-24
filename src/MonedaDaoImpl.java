@@ -8,21 +8,13 @@ import java.util.*;
 
 public class MonedaDaoImpl implements MonedaDAO {
 
-    
-    private void cargarMoneda(Moneda moneda){
-    
-    }
-
-    public void hacerMoneda(){
-        Moneda moneda = new Moneda('c', "algo", "lu", 15.546, 0.3, 344.9);
-    }
-
     @Override
     
     public void crearMonedas(Moneda moneda) {
         String sql = "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR, VOLATILIDAD, STOCK) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
-
+            
+            
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -67,7 +59,7 @@ public class MonedaDaoImpl implements MonedaDAO {
     public List<Moneda> listarMonedas() {
         Connection c = null;
         Statement stmt = null;
-        try{
+        try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             c.setAutoCommit(false);
@@ -88,30 +80,35 @@ public class MonedaDaoImpl implements MonedaDAO {
                 monedas.add(moneda);
                 System.out.println(moneda.toString());
             }
-            
-        rs.close();
-        stmt.close();
-        c.close();
-      } catch (Exception e) {
+
+            rs.close();
+            stmt.close();
+            c.close();
+        } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
         System.out.println("Operation done successfully");
         return null;
     }
-    
+
     @Override
     public Moneda ListarPorNomenclatura(String nomenclatura) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ListarPorNomenclatura'");
+        return null;
     }
 
     @Override
     public void actualizarStock(String nomenclatura, double nuevoStock) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actualizarStock'");
+
     }
 
+    /*
+     * Listar Stock
+     * Muestra en pantalla información del stock disponible.
+     * Si bien el Stock se mostrará ordenado por cantidad de manera descendente,
+     * debe ser capaz de ordenarse por nomenclatura. Se espera que use alguno de
+     * los mecanismos de interfaces vistos en teoría
+     */
     @Override
     public void ListarStock(boolean ordenarPorNomenclatura) {
         Connection c = null;
@@ -122,7 +119,7 @@ public class MonedaDaoImpl implements MonedaDAO {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             c.setAutoCommit(false);
-            System.out.println("Conexión a base de datos exitosa");
+            System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA;");
@@ -159,7 +156,7 @@ public class MonedaDaoImpl implements MonedaDAO {
             System.exit(0);
         }
 
-        System.out.println("Operación realizada exitosamente");
+        System.out.println("Operation done successfully");
     }
 
 }

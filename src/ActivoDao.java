@@ -1,8 +1,7 @@
-import java.util.List;
 
 public interface ActivoDao {
-    void GenerarActivo(String nomenclatura, double cantidad);
+    void generarActivo(Activo activo);
 
-    List<Activo> listarActivos();
+    void listarActivos(boolean esCripto, boolean ordenarPorNomenclatura);
 
 }

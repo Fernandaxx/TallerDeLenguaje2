@@ -65,7 +65,7 @@ public class DataBaseManager {
         }
 
         private static void printMenu() {
-                System.out.println("\n=== SISTEMA DE GESTIÓN DE CRIPTOMONEDAS ===\n");
+                System.out.println("\n=== SISTEMA DE GESTION DE CRIPTOMONEDAS ===\n");
                 System.out.println("1. Crear Monedas");
                 System.out.println("2. Listar Monedas");
                 System.out.println("3. Generar Stock");
@@ -80,7 +80,7 @@ public class DataBaseManager {
         }
 
         private static void printMenuDetallado() {
-                System.out.println("\n====== SISTEMA DE GESTIÓN DE CRIPTOMONEDAS ======\n");
+                System.out.println("\n====== SISTEMA DE GESTION DE CRIPTOMONEDAS ======\n");
                 System.out.println("1. Crear Monedas");
                 System.out.println("   - Registrar nueva moneda (Cripto o FIAT)");
                 System.out.println("   - Ingresar nombre, nomenclatura y valor en USD");
@@ -106,7 +106,6 @@ public class DataBaseManager {
 
         public static void main(String args[]) {
                 // CreateDatabase();
-
                 Scanner s = new Scanner(System.in);
                 int user_input = -1;
                 boolean menu_detallado = false;
@@ -125,9 +124,26 @@ public class DataBaseManager {
                                         System.out.println("Usuario opina 1.");
                                         System.out.println("Llamar a funcion 1.");
 
+                                        System.out.println("Ingrese tipo de la moneda: ");
+                                        char tipo = s.next().charAt(0);
+                                        System.err.println("Ingrese nombre de la moneda: ");
+                                        String nombre = s.nextLine();
+                                        System.err.println("Ingrese nomenclatura de la moneda: ");
+                                        String nomenclatura = s.nextLine();
+                                        System.err.println("Ingrese el valor en dolar de la moneda: ");
+                                        Double valorDolar = s.nextDouble();
+                                        System.err.println("Ingrese volatilidad de la moneda: ");
+                                        Double volatilidad = s.nextDouble();
+                                        
+                                        Moneda moneda = new Moneda(tipo,nombre,nomenclatura,valorDolar,volatilidad);
+
                                         MonedaDAO monedita = new MonedaDaoImpl();
 
+<<<<<<< HEAD
                                         Moneda moneda = new Moneda('c', "algo", "lu", 15.546, 0.3, 344.9);
+=======
+                                        Moneda moneda = new Moneda('C', "Litecoin", "LTC", 18.6, 0.5, 20);
+>>>>>>> e10c2e6950fdb0558d4b7f315f711c93a3f7806e
 
                                         monedita.crearMonedas(moneda);
 
@@ -145,17 +161,127 @@ public class DataBaseManager {
                                         System.out.println("Usuario opina 4.");
                                         System.out.println("Llamar a funcion 4.");
 
-                                        MonedaDAO monedaa = new MonedaDaoImpl();
-                                        monedaa.ListarStock(false);
+                                        System.out.println("==Listar stock== ");
+
+                                        boolean ordenarPorNomenclaturaa;
+                                        System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
+                                        s.nextLine();
+                                        String ordenar = s.nextLine();
+                                        if (ordenar.equals("y")) {
+                                                ordenarPorNomenclaturaa = true;
+                                        } else if (ordenar.equals("n")) {
+                                                ordenarPorNomenclaturaa = false;
+                                        } else {
+                                                System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
+                                                return;
+                                        }
+
+                                        MonedaDAO listarS = new MonedaDaoImpl();
+                                        listarS.ListarStock(ordenarPorNomenclaturaa);
+                                        System.out.println("Stock listado correctamente");
                                         break;
                                 case 5:
-                                        System.out.println("Usuario opina 5.");
-                                        System.out.println("Llamar a funcion 5.");
+                                        System.out.println("=== Ingresar Nuevo Activo ===");
+                                        System.out.println("¿Qué tipo de activo desea ingresar?");
+                                        System.out.println("1. Criptomoneda");
+                                        System.out.println("2. Fiat");
+
+                                        Activo activo = null;
+                                        int tipoActivo = s.nextInt();
+
+                                        System.out.println("Ingrese la cantidad:");
+                                        double cantidad = s.nextDouble();
+                                        s.nextLine();
+                                        switch (tipoActivo) {
+                                                case 1: // Criptomoneda
+                                                        ActivoCripto activoCripto = new ActivoCripto();
+                                                        activoCripto.setCantidad(cantidad);
+
+                                                        // Crear y configurar la criptomoneda
+                                                        Criptomoneda cripto = new Criptomoneda();
+                                                        System.out.println("Ingrese la nomenclatura (BTC, ETH, etc):");
+                                                        cripto.setNomenclatura(s.nextLine());
+
+                                                        activoCripto.setCripto(cripto);
+                                                        activo = activoCripto;
+                                                        break;
+
+                                                case 2: // Fiat
+                                                        ActivoFiat activoFiat = new ActivoFiat();
+                                                        activoFiat.setCantidad(cantidad);
+
+                                                        // Crear y configurar el Fiat
+                                                        Fiat fiat = new Fiat();
+                                                        // System.out.println("Ingrese el nombre de la moneda:");
+                                                        // fiat.setNombre(s.nextLine());
+                                                        System.out.println("Ingrese la nomenclatura (USD, EUR, etc):");
+                                                        fiat.setNomenclatura(s.nextLine());
+
+                                                        activoFiat.setFiat(fiat);
+                                                        activo = activoFiat;
+                                                        break;
+
+                                                default:
+                                                        System.out.println("Opción no válida");
+                                                        return;
+                                        }
+
+                                        // Mostrar resumen usando el método obtenerNomenclatura()
+                                        System.out.println("\nResumen del activo a ingresar:");
+                                        System.out.println("Cantidad: " + activo.getCantidad());
+                                        System.out.println("Nomenclatura: " + activo.obtenerNomenclatura());
+
+                                        System.out.println(
+                                                        "\n¿Está seguro que desea ingresar el activo a la base de datos? (y/n)");
+
+                                        String confirmacion = s.nextLine();
+                                        if (confirmacion.equalsIgnoreCase("y")) {
+                                                ActivoDao generar = new ActivoDaoImpl();
+                                                generar.generarActivo(activo);
+                                                System.out.println("Activo ingresado exitosamente");
+
+                                        } else {
+                                                System.out.println("Operación cancelada");
+                                        }
+
                                         break;
                                 case 6:
-                                        System.out.println("Usuario opina 6.");
-                                        System.out.println("Llamar a funcion 6.");
+                                        boolean esCripto = false;
+                                        boolean ordenarPorNomenclatura = false;
+                                        System.out.println("===== Listar Activos =====");
+                                        System.out.println("¿Qué tipo de activo desea listar? ");
+                                        System.out.println("1. Criptomoneda");
+                                        System.out.println("2. Fiat");
+                                        int tipoAct = s.nextInt();
+                                        s.nextLine();
+                                        switch (tipoAct) {
+                                                case 1: // Criptomoneda
+                                                        esCripto = true;
+                                                        break;
+                                                case 2: // Fiat
+                                                        esCripto = false;
+                                                        break;
+
+                                                default:
+                                                        System.out.println("Opción no válida");
+                                                        return;
+                                        }
+                                        System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
+                                        String ordenar2 = s.nextLine();
+                                        if (ordenar2.equals("y")) {
+                                                ordenarPorNomenclatura = true;
+                                        } else if (ordenar2.equals("n")) {
+                                                ordenarPorNomenclatura = false;
+                                        } else {
+                                                System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
+                                                return;
+                                        }
+
+                                        ActivoDao listar = new ActivoDaoImpl();
+                                        listar.listarActivos(esCripto, ordenarPorNomenclatura);
+                                        System.out.println("Listado generado.");
                                         break;
+
                                 case 7:
                                         System.out.println("Usuario opina 7.");
                                         System.out.println("Llamar a funcion 7.");

@@ -8,17 +8,31 @@
  * @since 2024
  */
 public class Criptomoneda extends Moneda {
-    private String nombre;
-    private String sigla;
-    private double cantidad;
+    private double volatilidad; // va en criptomoneda -> para Lu
 
     /**
      * Constructor por defecto de la clase Criptomoneda.
      */
 
     public Criptomoneda() {
+        
 
     }
+
+    
+    public Criptomoneda(char tipo, String nombre, String nomenclatura, double valor_dolar, double volatilidad,
+            double stock, String nombre2, String sigla, double volatilidad2) {
+        super(tipo, nombre, nomenclatura, valor_dolar, volatilidad, stock);
+        this.volatilidad = volatilidad;
+    }
+
+
+    public Criptomoneda(String nombre, String sigla, double volatilidad) {
+        this.nombre = nombre;
+        this.sigla = sigla;
+        this.volatilidad = volatilidad;
+    }
+
 
     /**
      * Obtiene el nombre de la criptomoneda.
@@ -56,21 +70,4 @@ public class Criptomoneda extends Moneda {
         this.sigla = sigla;
     }
 
-    /**
-     * Obtiene la cantidad de la criptomoneda disponible.
-     * 
-     * @return La cantidad de la criptomoneda.
-     */
-    public double getCantidad() {
-        return cantidad;
-    }
-
-    /**
-     * Establece la cantidad de la criptomoneda disponible.
-     * 
-     * @param cantidad La nueva cantidad de la criptomoneda.
-     */
-    public void setCantidad(double cantidad) {
-        this.cantidad = cantidad;
-    }
 }
