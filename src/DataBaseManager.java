@@ -110,7 +110,6 @@ public class DataBaseManager {
 
         public static void main(String args[]) {
                 // CreateDatabase();
-
                 Scanner s = new Scanner(System.in);
                 int user_input = -1;
                 boolean menu_detallado = false;
@@ -129,9 +128,30 @@ public class DataBaseManager {
                                         System.out.println("Usuario opina 1.");
                                         System.out.println("Llamar a funcion 1.");
 
+                                        System.out.println("Ingrese tipo de la moneda: ");
+                                        char tipo = s.next().charAt(0);
+                                        System.err.println("Ingrese nombre de la moneda: ");
+                                        String nombre = s.nextLine();
+                                        System.err.println("Ingrese nomenclatura de la moneda: ");
+                                        String nomenclatura = s.nextLine();
+                                        System.err.println("Ingrese el valor en dolar de la moneda: ");
+                                        Double valorDolar = s.nextDouble();
+                                        System.err.println("Ingrese volatilidad de la moneda: ");
+                                        Double volatilidad = s.nextDouble();
+                                        
+                                        Moneda moneda = new Moneda(tipo,nombre,nomenclatura,valorDolar,volatilidad);
+
                                         MonedaDAO monedita = new MonedaDaoImpl();
 
+<<<<<<< HEAD
                                         Moneda moneda = new Moneda('F', "peso", "ARS", 1000, 0, 800);
+=======
+<<<<<<< HEAD
+                                        Moneda moneda = new Moneda('c', "algo", "lu", 15.546, 0.3, 344.9);
+=======
+                                        Moneda moneda = new Moneda('C', "Litecoin", "LTC", 18.6, 0.5, 20);
+>>>>>>> e10c2e6950fdb0558d4b7f315f711c93a3f7806e
+>>>>>>> ab4d176c86c56741b58675ec032ed14c0fe88970
 
                                         monedita.crearMonedas(moneda);
 
