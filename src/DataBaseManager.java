@@ -127,7 +127,7 @@ public class DataBaseManager {
 
                                         MonedaDAO monedita = new MonedaDaoImpl();
 
-                                        Moneda moneda = new Moneda('b', "algo", "uwu", 15.546, 0.3, 344.9);
+                                        Moneda moneda = new Moneda('c', "algo", "lu", 15.546, 0.3, 344.9);
 
                                         monedita.crearMonedas(moneda);
 

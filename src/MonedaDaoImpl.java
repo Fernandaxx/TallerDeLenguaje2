@@ -8,7 +8,17 @@ import java.util.*;
 
 public class MonedaDaoImpl implements MonedaDAO {
 
+    
+    private void cargarMoneda(Moneda moneda){
+    
+    }
+
+    public void hacerMoneda(){
+        Moneda moneda = new Moneda('c', "algo", "lu", 15.546, 0.3, 344.9);
+    }
+
     @Override
+    
     public void crearMonedas(Moneda moneda) {
         String sql = "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR, VOLATILIDAD, STOCK) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
