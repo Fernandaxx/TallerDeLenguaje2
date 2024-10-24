@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
+import java.util.*;
 
 public class MonedaDaoImpl implements MonedaDAO {
     private Connection connection;
@@ -56,10 +56,41 @@ public class MonedaDaoImpl implements MonedaDAO {
 
     @Override
     public List<Moneda> listarMonedas() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listarMonedas'");
-    }
+        Connection c = null;
+        Statement stmt = null;
+        try{
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
 
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA;");
+
+            List<Moneda> monedas = new LinkedList<Moneda>();
+            while (rs.next()) {
+                Moneda moneda = new Moneda(
+                        rs.getString("TIPO").charAt(0),
+                        rs.getString("NOMBRE"),
+                        rs.getString("NOMENCLATURA"),
+                        rs.getDouble("VALOR_DOLAR"),
+                        rs.getDouble("VOLATILIDAD"),
+                        rs.getDouble("STOCK"));
+                monedas.add(moneda);
+                System.out.println(moneda.toString());
+            }
+            
+        rs.close();
+        stmt.close();
+        c.close();
+      } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Operation done successfully");
+        return null;
+    }
+    
     @Override
     public Moneda ListarPorNomenclatura(String nomenclatura) {
         // TODO Auto-generated method stub

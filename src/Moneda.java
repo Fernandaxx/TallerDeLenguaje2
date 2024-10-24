@@ -66,4 +66,16 @@ public class Moneda {
         this.stock = stock;
     }
 
+    @Override
+public String toString() {
+    return "Moneda :\n" +
+           "\tTipo = " + tipo + "\n" +
+           "\tNombre = '" + nombre + "',\n" +
+           "\tNomenclatura = '" + nomenclatura + "'\n" +
+           "\tValor en Dólares = " + valor_dolar + "\n" +
+           "\tVolatilidad = " + volatilidad + "\n" +
+           "\tStock = " + stock + "\n" ;
+}
+    
+
 }
