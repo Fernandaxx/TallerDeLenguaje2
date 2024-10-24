@@ -149,8 +149,69 @@ public class DataBaseManager {
                                         monedaa.ListarStock(false);
                                         break;
                                 case 5:
-                                        System.out.println("Usuario opina 5.");
-                                        System.out.println("Llamar a funcion 5.");
+                                        System.out.println("=== Ingresar Nuevo Activo ===");
+                                        System.out.println("¿Qué tipo de activo desea ingresar?");
+                                        System.out.println("1. Criptomoneda");
+                                        System.out.println("2. Fiat");
+
+                                        Activo activo = null;
+                                        int tipoActivo = s.nextInt();
+
+                                        System.out.println("Ingrese la cantidad:");
+                                        double cantidad = s.nextDouble();
+                                        s.nextLine();
+                                        switch (tipoActivo) {
+                                                case 1: // Criptomoneda
+                                                        ActivoCripto activoCripto = new ActivoCripto();
+                                                        activoCripto.setCantidad(cantidad);
+
+                                                        // Crear y configurar la criptomoneda
+                                                        Criptomoneda cripto = new Criptomoneda();
+                                                        System.out.println("Ingrese la nomenclatura (BTC, ETH, etc):");
+                                                        cripto.setNomenclatura(s.nextLine());
+
+                                                        activoCripto.setCripto(cripto);
+                                                        activo = activoCripto;
+                                                        break;
+
+                                                case 2: // Fiat
+                                                        ActivoFiat activoFiat = new ActivoFiat();
+                                                        activoFiat.setCantidad(cantidad);
+
+                                                        // Crear y configurar el Fiat
+                                                        Fiat fiat = new Fiat();
+                                                        // System.out.println("Ingrese el nombre de la moneda:");
+                                                        // fiat.setNombre(s.nextLine());
+                                                        System.out.println("Ingrese la nomenclatura (USD, EUR, etc):");
+                                                        fiat.setNomenclatura(s.nextLine());
+
+                                                        activoFiat.setFiat(fiat);
+                                                        activo = activoFiat;
+                                                        break;
+
+                                                default:
+                                                        System.out.println("Opción no válida");
+                                                        return;
+                                        }
+
+                                        // Mostrar resumen usando el método obtenerNomenclatura()
+                                        System.out.println("\nResumen del activo a ingresar:");
+                                        System.out.println("Cantidad: " + activo.getCantidad());
+                                        System.out.println("Nomenclatura: " + activo.obtenerNomenclatura());
+
+                                        System.out.println( 
+                                                        "\n¿Está seguro que desea ingresar el activo a la base de datos? (y/n)");
+
+                                        String confirmacion = s.nextLine();
+                                        if (confirmacion.equalsIgnoreCase("y")) {
+                                                ActivoDao generar = new ActivoDaoImpl();
+                                                generar.generarActivo(activo);
+                                                System.out.println("Activo ingresado exitosamente");
+
+                                        } else {
+                                                System.out.println("Operación cancelada");
+                                        }
+
                                         break;
                                 case 6:
                                         System.out.println("Usuario opina 6.");

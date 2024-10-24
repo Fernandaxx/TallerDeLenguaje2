@@ -1,51 +1,87 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 public class ActivoDaoImpl implements ActivoDao {
 
-    @Override
-    /*
-     * (o como ud. haya nombrado a la cantidad de una determinada moneda en posesión
-     * del usuario)
-     * Permitir ingresar la cantidad y la nomenclatura.
-     * Si el usuario confirma, se guarda en la base de datos.
-     * La nomenclatura ingresada debe existir entre las criptomonedas creadas en el
-     * punto anterior para
-     * guardarse en la base de datos, caso contrario el programa informa un error.
-     */
+    private boolean nomenclaturaExiste(Connection c, String nomenclatura, String tipo) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM MONEDA WHERE NOMENCLATURA = ? AND TIPO = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, nomenclatura);
+            pstmt.setString(2, tipo);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        }
+    }
 
-    // falta: verificar que tipo de activo es -- verificar si el activo ya esta en
-    // la tabla y sumar -- verificar si la nomenclatura es un activo verdadero
-    // instans of
-    public void GenerarActivo(String nomenclatura, double cantidad) {
+    private boolean activoExiste(Connection c, String nomenclatura, boolean esCripto) throws SQLException {
+        String tableName = esCripto ? "ACTIVO_CRIPTO" : "ACTIVO_FIAT";
+        String sql = "SELECT CANTIDAD FROM " + tableName + " WHERE NOMENCLATURA = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, nomenclatura);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    private void actualizarActivo(Connection c, Activo activo, boolean esCripto) throws SQLException {
+        String tableName = esCripto ? "ACTIVO_CRIPTO" : "ACTIVO_FIAT";
+        String sql = "UPDATE " + tableName + " SET CANTIDAD = CANTIDAD + ? WHERE NOMENCLATURA = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setDouble(1, activo.getCantidad());
+            pstmt.setString(2, activo.obtenerNomenclatura());
+            pstmt.executeUpdate();
+        }
+    }
+
+    private void insertarActivo(Connection c, Activo activo, boolean esCripto) throws SQLException {
+        String tableName = esCripto ? "ACTIVO_CRIPTO" : "ACTIVO_FIAT";
+        String sql = "INSERT INTO " + tableName + " (NOMENCLATURA, CANTIDAD) VALUES (?, ?)";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, activo.obtenerNomenclatura());
+            pstmt.setDouble(2, activo.getCantidad());
+            pstmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void generarActivo(Activo activo) {
+        if (activo == null) {
+            System.err.println("No ingreso un Activo");
+            return;
+        }
+
+        boolean esCripto = activo instanceof ActivoCripto;
+        String tipo = esCripto ? "C" : "F";
+
         Connection c = null;
-        Statement stmt = null;
 
         try {
-            Class.forName("org.sqlite.JDBC");
+            // Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
-            stmt = c.createStatement();
+            // Verificar si la nomenclatura existe en la tabla MONEDA
+            if (!nomenclaturaExiste(c, activo.obtenerNomenclatura(), tipo)) {
+                System.err.println("La nomenclatura " + activo.obtenerNomenclatura() + " no existe como "
+                        + (esCripto ? "criptomoneda" : "moneda FIAT"));
+                return;
+            }
 
-            String sql = "INSERT INTO ACTIVO_CRIPTO (NOMENCLATURA,CANTIDAD) " +
-                    "VALUES ('" + nomenclatura + "', " + cantidad + ");";
-            stmt.executeUpdate(sql);
-
-            stmt.close();
+            // Verificar si el activo ya existe y actualizarlo, o crear uno nuevo
+            if (activoExiste(c, activo.obtenerNomenclatura(), esCripto)) {
+                actualizarActivo(c, activo, esCripto);
+            } else {
+                insertarActivo(c, activo, esCripto);
+            }
             c.commit();
-            c.close();
-        } catch (
 
-        Exception e) {
+        } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
+            System.exit(1);
         }
-        System.out.println("Records created successfully");
     }
 
     @Override
@@ -88,4 +124,28 @@ public class ActivoDaoImpl implements ActivoDao {
         System.out.println("Operation done successfully");
         return null;
     }
+
 }
+
+/*
+ * // Método auxiliar para obtener un activo existente
+ * public Activo obtenerActivo(String nomenclatura, boolean esCripto) throws
+ * SQLException {
+ * String tableName = esCripto ? "ACTIVO_CRIPTO" : "ACTIVO_FIAT";
+ * String sql = "SELECT CANTIDAD FROM " + tableName + " WHERE NOMENCLATURA = ?";
+ * 
+ * try (Connection conn = getConnection();
+ * PreparedStatement pstmt = conn.prepareStatement(sql)) {
+ * 
+ * pstmt.setString(1, nomenclatura);
+ * try (ResultSet rs = pstmt.executeQuery()) {
+ * if (rs.next()) {
+ * double cantidad = rs.getDouble("CANTIDAD");
+ * return esCripto ? new ActivoCripto(nomenclatura, cantidad) : new
+ * ActivoFiat(nomenclatura, cantidad);
+ * }
+ * return null;
+ * }
+ * }
+ * }
+ */

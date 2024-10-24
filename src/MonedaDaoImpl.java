@@ -57,7 +57,7 @@ public class MonedaDaoImpl implements MonedaDAO {
     public List<Moneda> listarMonedas() {
         Connection c = null;
         Statement stmt = null;
-        try{
+        try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             c.setAutoCommit(false);
@@ -78,28 +78,26 @@ public class MonedaDaoImpl implements MonedaDAO {
                 monedas.add(moneda);
                 System.out.println(moneda.toString());
             }
-            
-        rs.close();
-        stmt.close();
-        c.close();
-      } catch (Exception e) {
+
+            rs.close();
+            stmt.close();
+            c.close();
+        } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
         System.out.println("Operation done successfully");
         return null;
     }
-    
+
     @Override
     public Moneda ListarPorNomenclatura(String nomenclatura) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ListarPorNomenclatura'");
+        return null;
     }
 
     @Override
     public void actualizarStock(String nomenclatura, double nuevoStock) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actualizarStock'");
+
     }
 
     @Override

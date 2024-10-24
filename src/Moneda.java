@@ -1,9 +1,9 @@
-public class Moneda {
+public class Moneda { // deberia ser abstracta. El crear moneda debe elegir entre cripto y fiat
     private char tipo;
     private String nombre;
     private String nomenclatura;
     private double valor_dolar;
-    private double volatilidad;
+    private double volatilidad; // va en criptomoneda -> para Lu
     private double stock;
 
     public char getTipo() {
@@ -67,15 +67,14 @@ public class Moneda {
     }
 
     @Override
-public String toString() {
-    return "Moneda :\n" +
-           "\tTipo = " + tipo + "\n" +
-           "\tNombre = '" + nombre + "',\n" +
-           "\tNomenclatura = '" + nomenclatura + "'\n" +
-           "\tValor en Dólares = " + valor_dolar + "\n" +
-           "\tVolatilidad = " + volatilidad + "\n" +
-           "\tStock = " + stock + "\n" ;
-}
-    
+    public String toString() {
+        return "Moneda :\n" +
+                "\tTipo = " + tipo + "\n" +
+                "\tNombre = '" + nombre + "',\n" +
+                "\tNomenclatura = '" + nomenclatura + "'\n" +
+                "\tValor en Dólares = " + valor_dolar + "\n" +
+                "\tVolatilidad = " + volatilidad + "\n" +
+                "\tStock = " + stock + "\n";
+    }
 
 }
