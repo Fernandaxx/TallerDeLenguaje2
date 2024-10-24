@@ -4,11 +4,17 @@ public class GeneradorSwap implements TransaccionDAO {
 
     @Override
     public void simularSwap() {
-        c =null;  mmm
-        stm =null;
+        Connection c =null;  
+        Statement stm =null;
 
         try{
             c= DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
+
+
+
+
+            c.close();
+
         }
     }
 }

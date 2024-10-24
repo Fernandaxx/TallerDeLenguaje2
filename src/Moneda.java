@@ -1,4 +1,4 @@
-public class Moneda { // deberia ser abstracta. El crear moneda debe elegir entre cripto y fiat
+public abstract class Moneda { // deberia ser abstracta. El crear moneda debe elegir entre cripto y fiat
     private char tipo;
     private String nombre;
     private String nomenclatura;
@@ -10,13 +10,12 @@ public class Moneda { // deberia ser abstracta. El crear moneda debe elegir entr
         return tipo;
     }
 
-    public Moneda(char tipo, String nombre, String nomenclatura, double valor_dolar, double volatilidad, double stock) {
+    public Moneda(char tipo, String nombre, String nomenclatura, double valor_dolar) {
         this.tipo = tipo;
         this.nombre = nombre;
         this.nomenclatura = nomenclatura;
         this.valor_dolar = valor_dolar;
-        this.volatilidad = volatilidad;
-        this.stock = stock;
+
     }
 
     public Moneda() {
@@ -72,9 +71,7 @@ public class Moneda { // deberia ser abstracta. El crear moneda debe elegir entr
                 "\tTipo = " + tipo + "\n" +
                 "\tNombre = '" + nombre + "',\n" +
                 "\tNomenclatura = '" + nomenclatura + "'\n" +
-                "\tValor en Dólares = " + valor_dolar + "\n" +
-                "\tVolatilidad = " + volatilidad + "\n" +
-                "\tStock = " + stock + "\n";
+                "\tValor en Dólares = " + valor_dolar + "\n";
     }
 
 }

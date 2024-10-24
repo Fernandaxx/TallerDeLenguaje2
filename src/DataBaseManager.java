@@ -104,6 +104,10 @@ public class DataBaseManager {
                 System.out.print("\nSeleccione una opción: ");
         }
 
+        private static void crearMonedas() {
+
+        }
+
         public static void main(String args[]) {
                 // CreateDatabase();
 
@@ -127,7 +131,7 @@ public class DataBaseManager {
 
                                         MonedaDAO monedita = new MonedaDaoImpl();
 
-                                        Moneda moneda = new Moneda('C', "Litecoin", "LTC", 18.6, 0.5, 20);
+                                        Moneda moneda = new Moneda('F', "peso", "ARS", 1000, 0, 800);
 
                                         monedita.crearMonedas(moneda);
 

@@ -8,9 +8,8 @@
  * @since 2024
  */
 public class Criptomoneda extends Moneda {
-    private String nombre;
-    private String sigla;
-    // private double cantidad;
+    private double volatilidad;
+    private double stock;
 
     /**
      * Constructor por defecto de la clase Criptomoneda.
@@ -20,40 +19,47 @@ public class Criptomoneda extends Moneda {
 
     }
 
-    /**
-     * Obtiene el nombre de la criptomoneda.
-     * 
-     * @return El nombre de la criptomoneda.
-     */
-    public String getNombre() {
-        return nombre;
+    public Criptomoneda(char tipo, String nombre, String nomenclatura, double valor_dolar, double volatilidad,
+            double stock) {
+        super(tipo, nombre, nomenclatura, valor_dolar);
+        this.volatilidad = volatilidad;
+        this.stock = stock;
     }
 
     /**
-     * Establece el nombre de la criptomoneda.
+     * Obtiene el stock de la criptomoneda.
      * 
-     * @param nombre El nombre de la criptomoneda.
+     * @return El stock de la criptomoneda.
      */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public double getStock() {
+        return stock;
     }
 
     /**
-     * Obtiene la sigla (abreviatura) de la criptomoneda.
+     * Establece el stock de la criptomoneda.
      * 
-     * @return La sigla de la criptomoneda.
+     * @param nombre El stock de la criptomoneda.
      */
-    public String getSigla() {
-        return sigla;
+    public void setNStock(double stock) {
+        this.stock = stock;
     }
 
     /**
-     * Establece la sigla (abreviatura) de la criptomoneda.
+     * Obtiene la volatilidad de la criptomoneda.
      * 
-     * @param sigla La nueva sigla de la criptomoneda.
+     * @return La volatilidad de la criptomoneda.
      */
-    public void setSigla(String sigla) {
-        this.sigla = sigla;
+    public double getVolatilidad() {
+        return volatilidad;
+    }
+
+    /**
+     * Establece la volatilidad de la criptomoneda.
+     * 
+     * @param sigla La nueva volatilidad de la criptomoneda.
+     */
+    public void setSVolatilidad(double volatilidad) {
+        this.volatilidad = volatilidad;
     }
 
 }
