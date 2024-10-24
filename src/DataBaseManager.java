@@ -145,8 +145,24 @@ public class DataBaseManager {
                                         System.out.println("Usuario opina 4.");
                                         System.out.println("Llamar a funcion 4.");
 
-                                        MonedaDAO monedaa = new MonedaDaoImpl();
-                                        monedaa.ListarStock(false);
+                                        System.out.println("==Listar stock== ");
+
+                                        boolean ordenarPorNomenclaturaa;
+                                        System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
+                                        s.nextLine();
+                                        String ordenar = s.nextLine();
+                                        if (ordenar.equals("y")) {
+                                                ordenarPorNomenclaturaa = true;
+                                        } else if (ordenar.equals("n")) {
+                                                ordenarPorNomenclaturaa = false;
+                                        } else {
+                                                System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
+                                                return;
+                                        }
+
+                                        MonedaDAO listarS = new MonedaDaoImpl();
+                                        listarS.ListarStock(ordenarPorNomenclaturaa);
+                                        System.out.println("Stock listado correctamente");
                                         break;
                                 case 5:
                                         System.out.println("=== Ingresar Nuevo Activo ===");
@@ -233,13 +249,12 @@ public class DataBaseManager {
                                                 default:
                                                         System.out.println("Opción no válida");
                                                         return;
-
                                         }
                                         System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
-                                        String ordenar = s.nextLine();
-                                        if (ordenar.equals("y")) {
+                                        String ordenar2 = s.nextLine();
+                                        if (ordenar2.equals("y")) {
                                                 ordenarPorNomenclatura = true;
-                                        } else if (ordenar.equals("n")) {
+                                        } else if (ordenar2.equals("n")) {
                                                 ordenarPorNomenclatura = false;
                                         } else {
                                                 System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");

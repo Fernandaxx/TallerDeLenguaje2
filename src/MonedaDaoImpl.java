@@ -100,6 +100,13 @@ public class MonedaDaoImpl implements MonedaDAO {
 
     }
 
+    /*
+     * Listar Stock
+     * Muestra en pantalla información del stock disponible.
+     * Si bien el Stock se mostrará ordenado por cantidad de manera descendente,
+     * debe ser capaz de ordenarse por nomenclatura. Se espera que use alguno de
+     * los mecanismos de interfaces vistos en teoría
+     */
     @Override
     public void ListarStock(boolean ordenarPorNomenclatura) {
         Connection c = null;
@@ -110,7 +117,7 @@ public class MonedaDaoImpl implements MonedaDAO {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             c.setAutoCommit(false);
-            System.out.println("Conexión a base de datos exitosa");
+            System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA;");
@@ -147,7 +154,7 @@ public class MonedaDaoImpl implements MonedaDAO {
             System.exit(0);
         }
 
-        System.out.println("Operación realizada exitosamente");
+        System.out.println("Operation done successfully");
     }
 
 }
