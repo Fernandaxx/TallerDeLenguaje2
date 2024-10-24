@@ -214,9 +214,43 @@ public class DataBaseManager {
 
                                         break;
                                 case 6:
-                                        System.out.println("Usuario opina 6.");
-                                        System.out.println("Llamar a funcion 6.");
+                                        boolean esCripto = false;
+                                        boolean ordenarPorNomenclatura = false;
+                                        System.out.println("===== Listar Activos =====");
+                                        System.out.println("¿Qué tipo de activo desea listar? ");
+                                        System.out.println("1. Criptomoneda");
+                                        System.out.println("2. Fiat");
+                                        int tipoAct = s.nextInt();
+                                        s.nextLine();
+                                        switch (tipoAct) {
+                                                case 1: // Criptomoneda
+                                                        esCripto = true;
+                                                        break;
+                                                case 2: // Fiat
+                                                        esCripto = false;
+                                                        break;
+
+                                                default:
+                                                        System.out.println("Opción no válida");
+                                                        return;
+
+                                        }
+                                        System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
+                                        String ordenar = s.nextLine();
+                                        if (ordenar.equals("y")) {
+                                                ordenarPorNomenclatura = true;
+                                        } else if (ordenar.equals("n")) {
+                                                ordenarPorNomenclatura = false;
+                                        } else {
+                                                System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
+                                                return;
+                                        }
+
+                                        ActivoDao listar = new ActivoDaoImpl();
+                                        listar.listarActivos(esCripto, ordenarPorNomenclatura);
+                                        System.out.println("Listado generado.");
                                         break;
+
                                 case 7:
                                         System.out.println("Usuario opina 7.");
                                         System.out.println("Llamar a funcion 7.");

@@ -1,5 +1,5 @@
 import java.sql.*;
-import java.util.List;
+import java.util.*;
 
 public class ActivoDaoImpl implements ActivoDao {
 
@@ -93,9 +93,11 @@ public class ActivoDaoImpl implements ActivoDao {
      * Se espera que use alguno de los mecanismos de interfaz vistos en teoría
      */
 
-    public List<Activo> listarActivos() {
+    public void listarActivos(boolean esCripto, boolean ordenarPorNomenclatura) {
         Connection c = null;
         Statement stmt = null;
+        List<Activo> activos = new LinkedList<>();
+
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
@@ -103,26 +105,37 @@ public class ActivoDaoImpl implements ActivoDao {
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM ACTIVO_CRIPTO;");
+            String tableName = esCripto ? "ACTIVO_CRIPTO" : "ACTIVO_FIAT";
+            ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName);
 
             while (rs.next()) {
-                String nom = rs.getString("NOMENCLATURA");
-                double cant = rs.getDouble("CANTIDAD");
+                Activo activo;
+                if (esCripto) {
+                    activo = new ActivoCripto(rs.getDouble("CANTIDAD"), rs.getString("NOMENCLATURA"));
+                } else {
+                    activo = new ActivoFiat(rs.getDouble("CANTIDAD"), rs.getString("NOMENCLATURA"));
+                }
+                activos.add(activo);
+            }
 
-                System.out.println("nom = " + nom);
-                System.out.println("cant = " + cant);
-
-                System.out.println();
+            if (ordenarPorNomenclatura) {
+                Collections.sort(activos, new ComparadorNomenclaturaActivo());
+            } else {
+                Collections.sort(activos, new ComparatorCantidad());
+            }
+            for (Activo act : activos) {
+                System.out.println("NOMENCLATURA = " + act.obtenerNomenclatura() +
+                        ", Cantidad = " + act.getCantidad());
             }
             rs.close();
             stmt.close();
             c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
+            System.exit(1);
         }
         System.out.println("Operation done successfully");
-        return null;
+
     }
 
 }

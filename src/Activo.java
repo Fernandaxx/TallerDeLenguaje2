@@ -2,6 +2,12 @@
 public abstract class Activo {
     private double cantidad;
 
+    public Activo(double cantidad) {
+    }
+
+    public Activo() {
+    }
+
     public double getCantidad() {
         return cantidad;
     }

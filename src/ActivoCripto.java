@@ -1,9 +1,26 @@
 public class ActivoCripto extends Activo {
     private String direccion;
-    private Criptomoneda cripto;
+    private Criptomoneda cripto = new Criptomoneda();;
 
     public String getDireccion() {
         return direccion;
+    }
+
+    public ActivoCripto() {
+        super();
+
+    }
+
+    public ActivoCripto(double cantidad, String Nomenclatura) {
+        super.setCantidad(cantidad);
+        this.cripto.setNomenclatura(Nomenclatura);
+
+    }
+
+    public ActivoCripto(double cantidad, String direccion, Criptomoneda cripto) {
+        super(cantidad);
+        this.direccion = direccion;
+        this.cripto = cripto;
     }
 
     public void setDireccion(String direccion) {
