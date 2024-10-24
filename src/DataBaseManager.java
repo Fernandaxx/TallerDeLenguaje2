@@ -65,7 +65,7 @@ public class DataBaseManager {
         }
 
         private static void printMenu() {
-                System.out.println("\n=== SISTEMA DE GESTIÓN DE CRIPTOMONEDAS ===\n");
+                System.out.println("\n=== SISTEMA DE GESTION DE CRIPTOMONEDAS ===\n");
                 System.out.println("1. Crear Monedas");
                 System.out.println("2. Listar Monedas");
                 System.out.println("3. Generar Stock");
@@ -80,7 +80,7 @@ public class DataBaseManager {
         }
 
         private static void printMenuDetallado() {
-                System.out.println("\n====== SISTEMA DE GESTIÓN DE CRIPTOMONEDAS ======\n");
+                System.out.println("\n====== SISTEMA DE GESTION DE CRIPTOMONEDAS ======\n");
                 System.out.println("1. Crear Monedas");
                 System.out.println("   - Registrar nueva moneda (Cripto o FIAT)");
                 System.out.println("   - Ingresar nombre, nomenclatura y valor en USD");
@@ -127,7 +127,7 @@ public class DataBaseManager {
 
                                         MonedaDAO monedita = new MonedaDaoImpl();
 
-                                        Moneda moneda = new Moneda('b', "algo", "uwu", 15.546, 0.3, 344.9);
+                                        Moneda moneda = new Moneda('C', "Litecoin", "LTC", 18.6, 0.5, 20);
 
                                         monedita.crearMonedas(moneda);
 
@@ -199,7 +199,7 @@ public class DataBaseManager {
                                         System.out.println("Cantidad: " + activo.getCantidad());
                                         System.out.println("Nomenclatura: " + activo.obtenerNomenclatura());
 
-                                        System.out.println( 
+                                        System.out.println(
                                                         "\n¿Está seguro que desea ingresar el activo a la base de datos? (y/n)");
 
                                         String confirmacion = s.nextLine();
