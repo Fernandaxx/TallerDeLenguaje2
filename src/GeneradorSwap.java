@@ -4,7 +4,7 @@ public class GeneradorSwap implements TransaccionDAO {
 
     @Override
     public void simularSwap() {
-        c =null;
+        c =null;  mmm
         stm =null;
 
         try{
