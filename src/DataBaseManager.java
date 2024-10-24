@@ -135,6 +135,8 @@ public class DataBaseManager {
                                 case 2:
                                         System.out.println("Usuario opina 2.");
                                         System.out.println("Llamar a funcion 2.");
+                                        MonedaDAO dao = new MonedaDaoImpl();
+                                        dao.listarMonedas();
                                         break;
                                 case 3:
                                         System.out.println("Usuario opina 3.");
@@ -145,7 +147,7 @@ public class DataBaseManager {
                                         System.out.println("Llamar a funcion 4.");
 
                                         MonedaDAO monedaa = new MonedaDaoImpl();
-                                        monedaa.ListarStock();
+                                        monedaa.ListarStock(false);
                                         break;
                                 case 5:
                                         System.out.println("Usuario opina 5.");

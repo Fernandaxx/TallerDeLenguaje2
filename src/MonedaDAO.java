@@ -9,6 +9,6 @@ public interface MonedaDAO {
 
     void actualizarStock(String nomenclatura, double nuevoStock);
 
-    List<Double> ListarStock();
+    void ListarStock(boolean porNomenclatura);
 
 }
