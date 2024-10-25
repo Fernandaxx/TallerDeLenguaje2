@@ -138,15 +138,14 @@ public class DataBaseManager {
                                         Double valorDolar = s.nextDouble();
                                         System.err.println("Ingrese volatilidad de la moneda: ");
                                         Double volatilidad = s.nextDouble();
-                                        
-                                        Moneda moneda = new Moneda(tipo,nombre,nomenclatura,valorDolar,volatilidad);
+
+                                        Moneda moneda = new Moneda(tipo, nombre, nomenclatura, valorDolar, volatilidad);
 
                                         MonedaDAO monedita = new MonedaDaoImpl();
 
                                         Moneda moneda = new Moneda('F', "peso", "ARS", 1000, 0, 800);
                                         Moneda moneda = new Moneda('c', "algo", "lu", 15.546, 0.3, 344.9);
                                         Moneda moneda = new Moneda('C', "Litecoin", "LTC", 18.6, 0.5, 20);
-
 
                                         monedita.crearMonedas(moneda);
 
