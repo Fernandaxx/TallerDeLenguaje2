@@ -143,15 +143,10 @@ public class DataBaseManager {
 
                                         MonedaDAO monedita = new MonedaDaoImpl();
 
-<<<<<<< HEAD
                                         Moneda moneda = new Moneda('F', "peso", "ARS", 1000, 0, 800);
-=======
-<<<<<<< HEAD
                                         Moneda moneda = new Moneda('c', "algo", "lu", 15.546, 0.3, 344.9);
-=======
                                         Moneda moneda = new Moneda('C', "Litecoin", "LTC", 18.6, 0.5, 20);
->>>>>>> e10c2e6950fdb0558d4b7f315f711c93a3f7806e
->>>>>>> ab4d176c86c56741b58675ec032ed14c0fe88970
+
 
                                         monedita.crearMonedas(moneda);
 
