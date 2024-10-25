@@ -1,14 +1,24 @@
-public abstract class Moneda { // deberia ser abstracta. El crear moneda debe elegir entre cripto y fiat
+///////////////------FALTAN COMENTARIOS-------/////////////////
+//////////////////////////////////////////////////////////////
+
+/**
+ * La clase abstracta Moneda modela una moneda en el sistema Billetera
+ * Virtual, con su
+ * volatilidad y el stock de la misma.
+ * 
+ * @author Grupo13
+ * @version 2.0
+ * @since 2024
+ */
+public abstract class Moneda {
     private char tipo;
     private String nombre;
     private String nomenclatura;
     private double valor_dolar;
-    private double volatilidad; // va en criptomoneda -> para Lu
-    private double stock;
 
-    public char getTipo() {
-        return tipo;
-    }
+    /**
+     * Constructor de la clase Moneda.
+     */
 
     public Moneda(char tipo, String nombre, String nomenclatura, double valor_dolar) {
         this.tipo = tipo;
@@ -18,8 +28,27 @@ public abstract class Moneda { // deberia ser abstracta. El crear moneda debe el
 
     }
 
+    /**
+     * Constructor por defecto de la clase Moneda.
+     */
+
     public Moneda() {
     }
+
+    /**
+     * Obtiene el tipo de la moneda.
+     * 
+     * @return El tipo de la moneda.
+     */
+    public char getTipo() {
+        return tipo;
+    }
+
+    /**
+     * Establece el tipo de la moneda.
+     * 
+     * @param nombre El tipo de la moneda.
+     */
 
     public void setTipo(char tipo) {
         this.tipo = tipo;
@@ -47,23 +76,7 @@ public abstract class Moneda { // deberia ser abstracta. El crear moneda debe el
 
     public void setValor_dolar(double valor_dolar) {
         this.valor_dolar = valor_dolar;
-    }
-
-    public double getVolatilidad() {
-        return volatilidad;
-    }
-
-    public void setVolatilidad(double volatilidad) {
-        this.volatilidad = volatilidad;
-    }
-
-    public double getStock() {
-        return stock;
-    }
-
-    public void setStock(double stock) {
-        this.stock = stock;
-    }
+    } 
 
     @Override
     public String toString() {

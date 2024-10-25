@@ -1,7 +1,7 @@
 /**
- * La clase Criptomoneda representa una criptomoneda en el sistema Billetera
+ * La clase Criptomoneda representa una moneda criptomoneda en el sistema Billetera
  * Virtual, con su
- * volatilidad y stock de la misma.
+ * volatilidad y el stock de la misma.
  * 
  * @author Grupo13
  * @version 2.0
@@ -17,6 +17,10 @@ public class Criptomoneda extends Moneda {
 
     public Criptomoneda() {
     }
+
+    /**
+     * Constructor de la clase Criptomoneda.
+     */
 
     public Criptomoneda(char tipo, String nombre, String nomenclatura, double valor_dolar, double volatilidad,
             double stock) {
@@ -57,8 +61,17 @@ public class Criptomoneda extends Moneda {
      * 
      * @param sigla La nueva volatilidad de la criptomoneda.
      */
-    public void setSVolatilidad(double volatilidad) {
+    public void setVolatilidad(double volatilidad) {
         this.volatilidad = volatilidad;
+    }
+
+
+    
+    public String toString() {
+        return "Moneda :\n" +
+                super.toString() +
+                "\tVolatilidad = " + volatilidad + "\n" + 
+                "\t Stock = " + stock + "\n";
     }
 
 }
