@@ -1,7 +1,7 @@
 import java.util.List;
 
-public interface MonedaDAO {
-    void crearMonedas(Moneda moneda);
+public interface MonedaDao {
+    void generarMoneda(Moneda moneda);
 
     List<Moneda> listarMonedas();
 

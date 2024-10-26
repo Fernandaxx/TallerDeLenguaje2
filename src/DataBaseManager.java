@@ -105,6 +105,65 @@ public class DataBaseManager {
         }
 
         private static void crearMonedas() {
+                Scanner s = new Scanner(System.in);
+
+                System.out.println("=== Ingresar Nueva Moneda ===");
+                System.out.println("¿Qué tipo de moneda desea ingresar?");
+                System.out.println("1. Criptomoneda");
+                System.out.println("2. Fiat");
+                Moneda moneda = null;
+                int tipoMoneda = s.nextInt();
+
+                System.out.println("Ingrese nombre de la moneda:");
+                String nombre = s.next();
+                //s.nextLine();
+                System.out.println("Ingrese nomenclatura de la moneda:");
+                String nomenclatura = s.next();
+                //s.nextLine();
+                System.out.println("Ingrese valor en dolar de la moneda:");
+                double valorDolar = s.nextDouble();
+               // s.nextLine();
+                
+                switch (tipoMoneda) {
+                        case 1: // Criptomoneda
+                                System.out.println("Ingrese volatilidad de la moneda:");
+                                double volatilidad = s.nextDouble();
+                                s.nextLine();
+                                System.out.println("Ingrese Stock de la moneda:");
+                                double stock = s.nextDouble();
+                                s.nextLine();
+                                Criptomoneda criptomoneda = new Criptomoneda('C',nombre,nomenclatura,valorDolar,volatilidad,stock);
+                                moneda=criptomoneda;
+                                break;
+
+                        case 2: // Fiat
+                                Fiat fiat = new Fiat('F',nombre,nomenclatura,valorDolar);
+                                moneda = fiat;
+                                break;
+
+                        default:
+                                System.out.println("Opción no válida");
+                                return;
+                }
+
+                // Mostrar resumen usando el método obtenerNomenclatura()
+                System.out.println("\nResumen de la moneda a ingresar:");
+                System.err.println("Tipo: " + moneda.getTipo());
+                System.out.println("Nombre: " + moneda.getNombre());
+                System.out.println("Nomenclatura: " + moneda.getNomenclatura());
+
+                System.out.println(
+                                "\n¿Está seguro que desea ingresar el activo a la base de datos? (y/n)");
+
+                String confirmacion = s.nextLine();
+                if (confirmacion.equalsIgnoreCase("y")) {
+                        MonedaDao generar = new MonedaDaoImpl();
+                        generar.generarMoneda(moneda);
+                        System.out.println("Moneda ingresada exitosamente");
+
+                } else {
+                        System.out.println("Operación cancelada");
+                }
 
         }
 
@@ -125,36 +184,13 @@ public class DataBaseManager {
 
                         switch (user_input) {
                                 case 1:
-                                        System.out.println("Usuario opina 1.");
-                                        System.out.println("Llamar a funcion 1.");
-
-                                        System.out.println("Ingrese tipo de la moneda: ");
-                                        char tipo = s.next().charAt(0);
-                                        System.err.println("Ingrese nombre de la moneda: ");
-                                        String nombre = s.nextLine();
-                                        System.err.println("Ingrese nomenclatura de la moneda: ");
-                                        String nomenclatura = s.nextLine();
-                                        System.err.println("Ingrese el valor en dolar de la moneda: ");
-                                        Double valorDolar = s.nextDouble();
-                                        System.err.println("Ingrese volatilidad de la moneda: ");
-                                        Double volatilidad = s.nextDouble();
-                                        
-                                        Moneda moneda = new Moneda(tipo,nombre,nomenclatura,valorDolar,volatilidad);
-
-                                        MonedaDAO monedita = new MonedaDaoImpl();
-
-                                        Moneda moneda = new Moneda('F', "peso", "ARS", 1000, 0, 800);
-                                        Moneda moneda = new Moneda('c', "algo", "lu", 15.546, 0.3, 344.9);
-                                        Moneda moneda = new Moneda('C', "Litecoin", "LTC", 18.6, 0.5, 20);
-
-
-                                        monedita.crearMonedas(moneda);
+                                        crearMonedas();
 
                                         break;
                                 case 2:
                                         System.out.println("Usuario opina 2.");
                                         System.out.println("Llamar a funcion 2.");
-                                        MonedaDAO monedi = new MonedaDaoImpl();
+                                        MonedaDao monedi = new MonedaDaoImpl();
                                         monedi.listarMonedas();
                                 case 3:
                                         System.out.println("Usuario opina 3.");
@@ -179,7 +215,7 @@ public class DataBaseManager {
                                                 return;
                                         }
 
-                                        MonedaDAO listarS = new MonedaDaoImpl();
+                                        MonedaDao listarS = new MonedaDaoImpl();
                                         listarS.ListarStock(ordenarPorNomenclaturaa);
                                         System.out.println("Stock listado correctamente");
                                         break;
