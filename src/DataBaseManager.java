@@ -122,7 +122,7 @@ public class DataBaseManager {
                 //s.nextLine();
                 System.out.println("Ingrese valor en dolar de la moneda:");
                 double valorDolar = s.nextDouble();
-               // s.nextLine();
+                s.nextLine();
                 
                 switch (tipoMoneda) {
                         case 1: // Criptomoneda
@@ -167,6 +167,30 @@ public class DataBaseManager {
 
         }
 
+        private static void listarMonedas(){
+                Scanner s = new Scanner(System.in);
+                boolean esCripto = false;
+                boolean ordenarPorNomenclatura = false;
+                System.out.println("===== Listar Monedas =====");
+                System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
+                String ordenar = s.nextLine();
+                if (ordenar.equals("y")) {
+                        ordenarPorNomenclatura = true;
+                } 
+                else if (ordenar.equals("n")) {
+                        ordenarPorNomenclatura = false;
+                } 
+                else {
+                        System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
+                        return;
+                }
+
+                MonedaDao listar = new MonedaDaoImpl();
+                listar.ListarMonedas(ordenarPorNomenclatura);
+                System.out.println("Listado generado.");
+                                        
+        }
+
         public static void main(String args[]) {
                 // CreateDatabase();
                 Scanner s = new Scanner(System.in);
@@ -190,8 +214,8 @@ public class DataBaseManager {
                                 case 2:
                                         System.out.println("Usuario opina 2.");
                                         System.out.println("Llamar a funcion 2.");
-                                        MonedaDao monedi = new MonedaDaoImpl();
-                                        monedi.listarMonedas();
+                                        listarMonedas();
+                                        break;
                                 case 3:
                                         System.out.println("Usuario opina 3.");
                                         System.out.println("Llamar a funcion 3.");

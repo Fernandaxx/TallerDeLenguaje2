@@ -1,9 +1,7 @@
-import java.util.List;
-
 public interface MonedaDao {
     void generarMoneda(Moneda moneda);
 
-    List<Moneda> listarMonedas();
+    void ListarMonedas(boolean ordenarPorNomenclatura);
 
     Moneda ListarPorNomenclatura(String nomenclatura);
 
