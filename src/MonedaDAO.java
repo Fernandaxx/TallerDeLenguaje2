@@ -3,9 +3,7 @@ public interface MonedaDao {
 
     void ListarMonedas(boolean ordenarPorNomenclatura);
 
-    Moneda ListarPorNomenclatura(String nomenclatura);
-
-    void actualizarStock(String nomenclatura, double nuevoStock);
+    void GenerarStock();
 
     void ListarStock(boolean porNomenclatura);
 

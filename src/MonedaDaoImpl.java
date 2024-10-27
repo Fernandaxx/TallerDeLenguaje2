@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MonedaDaoImpl implements MonedaDao {
     
@@ -129,12 +130,35 @@ public class MonedaDaoImpl implements MonedaDao {
     }
 
     @Override
-    public Moneda ListarPorNomenclatura(String nomenclatura) {
-        return null;
-    }
+    public void GenerarStock() {
 
-    @Override
-    public void actualizarStock(String nomenclatura, double nuevoStock) {
+        try {
+            Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+            String sql = "UPDATE MONEDA SET STOCK = ? WHERE NOMENCLATURA = ?";
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            while (rs.next()) {
+                if (rs.getString("TIPO").charAt(0)=='C')
+                {
+                    String nomenclatura = rs.getString("NOMENCLATURA");
+                    double numeroAleatorio = ThreadLocalRandom.current().nextDouble(0.0, 1000.0);
+                    numeroAleatorio = Math.round(numeroAleatorio * 100.0) / 100.0;
+
+                    pstmt.setDouble(1, numeroAleatorio);
+                    pstmt.setString(2, nomenclatura);
+                    pstmt.executeUpdate(); 
+                    System.out.println("Stock actualizado para: " + nomenclatura);
+                }
+            }
+            c.commit();
+        }catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(1);
+        }
+        System.out.println("Operation done successfully");
 
     }
 

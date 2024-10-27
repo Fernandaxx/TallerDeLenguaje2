@@ -219,6 +219,8 @@ public class DataBaseManager {
                                 case 3:
                                         System.out.println("Usuario opina 3.");
                                         System.out.println("Llamar a funcion 3.");
+                                        MonedaDao moneda = new MonedaDaoImpl();
+                                        moneda.GenerarStock();
                                         break;
                                 case 4:
                                         System.out.println("Usuario opina 4.");
