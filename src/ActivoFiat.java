@@ -16,7 +16,7 @@ public class ActivoFiat extends Activo {
     }
 
     public ActivoFiat() {
-        // TODO Auto-generated constructor stub
+
     }
 
     public void setFiat(Fiat fiat) {

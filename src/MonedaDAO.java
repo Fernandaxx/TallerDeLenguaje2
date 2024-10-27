@@ -1,4 +1,4 @@
-public interface MonedaDao {
+public interface MonedaDAO {
     void generarMoneda(Moneda moneda);
 
     void ListarMonedas(boolean ordenarPorNomenclatura);

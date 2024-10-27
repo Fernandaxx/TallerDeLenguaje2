@@ -14,8 +14,8 @@ import java.time.LocalDate;
  * @since 2024
  */
 public abstract class Transaccion {
-    private double costoComision;
-    private Duration demora;
+    // private double costoComision;
+    // private Duration demora;
     private LocalDate fecha;
     private String codigo;
 
@@ -32,6 +32,13 @@ public abstract class Transaccion {
      */
     public abstract void obtenerComision();
     // Lógica para obtener la comisión
+
+    public Transaccion(LocalDate fecha) {
+        // this.costoComision = costoComision;
+        // this.demora = demora;
+        this.fecha = fecha;
+        // this.codigo = codigo;
+    }
 
     /**
      * Obtiene las opciones de demora para la transacción (mediante una

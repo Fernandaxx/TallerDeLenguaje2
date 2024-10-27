@@ -116,14 +116,14 @@ public class DataBaseManager {
 
                 System.out.println("Ingrese nombre de la moneda:");
                 String nombre = s.next();
-                //s.nextLine();
+                // s.nextLine();
                 System.out.println("Ingrese nomenclatura de la moneda:");
                 String nomenclatura = s.next();
-                //s.nextLine();
+                // s.nextLine();
                 System.out.println("Ingrese valor en dolar de la moneda:");
                 double valorDolar = s.nextDouble();
                 s.nextLine();
-                
+
                 switch (tipoMoneda) {
                         case 1: // Criptomoneda
                                 System.out.println("Ingrese volatilidad de la moneda:");
@@ -132,17 +132,19 @@ public class DataBaseManager {
                                 System.out.println("Ingrese Stock de la moneda:");
                                 double stock = s.nextDouble();
                                 s.nextLine();
-                                Criptomoneda criptomoneda = new Criptomoneda('C',nombre,nomenclatura,valorDolar,volatilidad,stock);
-                                moneda=criptomoneda;
+                                Criptomoneda criptomoneda = new Criptomoneda('C', nombre, nomenclatura, valorDolar,
+                                                volatilidad, stock);
+                                moneda = criptomoneda;
                                 break;
 
                         case 2: // Fiat
-                                Fiat fiat = new Fiat('F',nombre,nomenclatura,valorDolar);
+                                Fiat fiat = new Fiat('F', nombre, nomenclatura, valorDolar);
                                 moneda = fiat;
                                 break;
 
                         default:
                                 System.out.println("Opción no válida");
+                                s.close();
                                 return;
                 }
 
@@ -157,43 +159,46 @@ public class DataBaseManager {
 
                 String confirmacion = s.nextLine();
                 if (confirmacion.equalsIgnoreCase("y")) {
-                        MonedaDao generar = new MonedaDaoImpl();
+                        MonedaDAO generar = new MonedaDaoImpl();
                         generar.generarMoneda(moneda);
                         System.out.println("Moneda ingresada exitosamente");
 
                 } else {
                         System.out.println("Operación cancelada");
                 }
-
+                s.close();
         }
 
-        private static void listarMonedas(){
+        private static void listarMonedas() {
                 Scanner s = new Scanner(System.in);
-                boolean esCripto = false;
+                // boolean esCripto = false;
                 boolean ordenarPorNomenclatura = false;
                 System.out.println("===== Listar Monedas =====");
                 System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
                 String ordenar = s.nextLine();
                 if (ordenar.equals("y")) {
                         ordenarPorNomenclatura = true;
-                } 
-                else if (ordenar.equals("n")) {
+                } else if (ordenar.equals("n")) {
                         ordenarPorNomenclatura = false;
-                } 
-                else {
+                } else {
                         System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
+                        s.close();
                         return;
                 }
 
-                MonedaDao listar = new MonedaDaoImpl();
+                MonedaDAO listar = new MonedaDaoImpl();
                 listar.ListarMonedas(ordenarPorNomenclatura);
                 System.out.println("Listado generado.");
-                                        
+                s.close();
         }
 
         public static void main(String args[]) {
-                // CreateDatabase();
                 Scanner s = new Scanner(System.in);
+                System.out.println("ingrese un numero distinto de 1 \n");
+                int crear = s.nextInt();
+                if (crear == 1)
+                        CreateDatabase();
+
                 int user_input = -1;
                 boolean menu_detallado = false;
                 while (user_input != 0) {
@@ -219,7 +224,7 @@ public class DataBaseManager {
                                 case 3:
                                         System.out.println("Usuario opina 3.");
                                         System.out.println("Llamar a funcion 3.");
-                                        MonedaDao moneda = new MonedaDaoImpl();
+                                        MonedaDAO moneda = new MonedaDaoImpl();
                                         moneda.GenerarStock();
                                         break;
                                 case 4:
@@ -241,7 +246,7 @@ public class DataBaseManager {
                                                 return;
                                         }
 
-                                        MonedaDao listarS = new MonedaDaoImpl();
+                                        MonedaDAO listarS = new MonedaDaoImpl();
                                         listarS.ListarStock(ordenarPorNomenclaturaa);
                                         System.out.println("Stock listado correctamente");
                                         break;
@@ -301,7 +306,7 @@ public class DataBaseManager {
 
                                         String confirmacion = s.nextLine();
                                         if (confirmacion.equalsIgnoreCase("y")) {
-                                                ActivoDao generar = new ActivoDaoImpl();
+                                                ActivoDAO generar = new ActivoDaoImpl();
                                                 generar.generarActivo(activo);
                                                 System.out.println("Activo ingresado exitosamente");
 
@@ -342,7 +347,7 @@ public class DataBaseManager {
                                                 return;
                                         }
 
-                                        ActivoDao listar = new ActivoDaoImpl();
+                                        ActivoDAO listar = new ActivoDaoImpl();
                                         listar.listarActivos(esCripto, ordenarPorNomenclatura);
                                         System.out.println("Listado generado.");
                                         break;

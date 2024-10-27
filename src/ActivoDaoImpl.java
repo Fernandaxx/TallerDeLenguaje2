@@ -1,7 +1,7 @@
 import java.sql.*;
 import java.util.*;
 
-public class ActivoDaoImpl implements ActivoDao {
+public class ActivoDaoImpl implements ActivoDAO {
 
     private boolean nomenclaturaExiste(Connection c, String nomenclatura, String tipo) throws SQLException {
         String sql = "SELECT COUNT(*) FROM MONEDA WHERE NOMENCLATURA = ? AND TIPO = ?";
