@@ -138,8 +138,10 @@ public class ActivoDaoImpl implements ActivoDAO {
 
     }
 
-    public boolean verificarStock(Connection c, String nomenclatura, double cantidad) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM ACTIVO_CRIPTO WHERE NOMENCLATURA = ? AND CANTIDAD >= ?";
+    public boolean verificarStock(Connection c, String nomenclatura, double cantidad, boolean esCripto)
+            throws SQLException {
+        String tableName = esCripto ? "ACTIVO_CRIPTO" : "ACTIVO_FIAT";
+        String sql = "SELECT COUNT(*) FROM " + tableName + "WHERE NOMENCLATURA = ? AND CANTIDAD >= ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
             pstmt.setString(1, nomenclatura);
             pstmt.setDouble(2, cantidad);
