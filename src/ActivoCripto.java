@@ -39,5 +39,5 @@ public class ActivoCripto extends Activo {
     public String obtenerNomenclatura() {
         return this.cripto.getNomenclatura();
     }
-x
+
 }
