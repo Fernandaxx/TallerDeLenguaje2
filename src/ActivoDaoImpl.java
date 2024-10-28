@@ -146,7 +146,7 @@ public class ActivoDaoImpl implements ActivoDAO {
             pstmt.setString(1, nomenclatura);
             pstmt.setDouble(2, cantidad);
             try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.next() && rs.getInt(1) > 0;
+                return rs.next() && rs.getInt(1) > 0;;
             }
         }
     }
