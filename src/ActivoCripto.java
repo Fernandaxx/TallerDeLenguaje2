@@ -1,6 +1,6 @@
 public class ActivoCripto extends Activo {
     private String direccion;
-    private Criptomoneda cripto = new Criptomoneda();;
+    private Criptomoneda cripto = new Criptomoneda();
 
     public String getDireccion() {
         return direccion;
