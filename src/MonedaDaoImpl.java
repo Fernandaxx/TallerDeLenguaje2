@@ -9,7 +9,17 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MonedaDaoImpl implements MonedaDAO {
 
-    private boolean monedaExiste(Connection c, String nomenclatura, boolean esCripto) throws SQLException {
+    public double equivalenteDolar(Connection c, String nomenclatura)throws SQLException{
+        String sql = "SELECT VALOR_DOLAR FROM MONEDA WHERE NOMENCLATURA = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)){
+            pstmt.setString(1,nomenclatura);
+            try (ResultSet rs = pstmt.executeQuery()){
+                return rs.getDouble("VALOR_DOLAR");
+            }
+        }
+    }
+
+    public boolean monedaExiste(Connection c, String nomenclatura, boolean esCripto) throws SQLException {
         String sql = "SELECT 1 FROM MONEDA WHERE NOMENCLATURA = ? AND TIPO = ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
             pstmt.setString(1, nomenclatura);

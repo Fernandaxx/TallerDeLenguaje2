@@ -192,6 +192,25 @@ public class DataBaseManager {
                 s.close();
         }
 
+
+        private static void generarCompra() {
+                Scanner s = new Scanner(System.in);
+
+                System.out.println("=== Comprar criptomoneda ===");
+                System.out.println("¿Qué criptomoneda desea comprar?");
+                listarMonedas();
+                System.out.println("Ingrese nomenclatura de la moneda:");
+                String nomenclaturaCripto = s.next();
+                System.out.println("¿Con que Fiat desea comprar?");
+                //listarActivos();
+                System.out.println("Ingrese nomenclatura de la moneda:");
+                String nomenclaturaFiat = s.next();
+                System.out.println("Ingrese cantidad de Fiat para comprar:");
+                Double cantidad = s.nextDouble();
+                
+                s.close();
+        }
+
         public static void main(String args[]) {
                 Scanner s = new Scanner(System.in);
                 System.out.println("ingrese un numero distinto de 1 \n");
