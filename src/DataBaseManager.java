@@ -192,7 +192,6 @@ public class DataBaseManager {
                 s.close();
         }
 
-
         private static void generarCompra() {
                 Scanner s = new Scanner(System.in);
 
@@ -202,12 +201,12 @@ public class DataBaseManager {
                 System.out.println("Ingrese nomenclatura de la moneda:");
                 String nomenclaturaCripto = s.next();
                 System.out.println("¿Con que Fiat desea comprar?");
-                //listarActivos();
+                // listarActivos();
                 System.out.println("Ingrese nomenclatura de la moneda:");
                 String nomenclaturaFiat = s.next();
                 System.out.println("Ingrese cantidad de Fiat para comprar:");
                 Double cantidad = s.nextDouble();
-                
+
                 s.close();
         }
 
