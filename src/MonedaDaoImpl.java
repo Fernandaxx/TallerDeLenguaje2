@@ -95,16 +95,25 @@ public class MonedaDaoImpl implements MonedaDAO {
             System.exit(1);
         }
     }
+    private void borrar(Connection c){
+        try{
+        Statement stmt = c.createStatement();
+        ResultSet rs = stmt.executeQuery("DELETE FROM MONEDA WHERE TIPO=b");
+        }
+        catch(Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(1);
+    }}
 
     @Override
     public void ListarMonedas(boolean ordenarPorNomenclatura) {
-
+        
         List<Moneda> monedas = new LinkedList<>();
         try {
             Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
-
+            borrar(c);
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
 

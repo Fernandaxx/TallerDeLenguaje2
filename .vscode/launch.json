@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DataBaseManager",
+            "request": "launch",
+            "mainClass": "DataBaseManager",
+            "projectName": "TallerDeLenguaje2_f46a4122"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

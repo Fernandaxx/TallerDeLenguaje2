@@ -21,7 +21,7 @@ public class GestorCompra {
 
             double equivalenteDolarCripto=monedaDAOImpl.equivalenteDolar(c, nomenclaturaCripto);
             double equivalenteDolarFiat=monedaDAOImpl.equivalenteDolar(c, nomenclaturaFiat);
-
+            
             double equivalente= (cantidad * equivalenteDolarFiat / equivalenteDolarCripto);
 
             

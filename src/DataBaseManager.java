@@ -155,7 +155,7 @@ public class DataBaseManager {
                 System.out.println("Nomenclatura: " + moneda.getNomenclatura());
 
                 System.out.println(
-                                "\n¿Está seguro que desea ingresar el activo a la base de datos? (y/n)");
+                                "\n¿Está seguro que desea ingresar la moneda a la base de datos? (y/n)");
 
                 String confirmacion = s.nextLine();
                 if (confirmacion.equalsIgnoreCase("y")) {
@@ -211,11 +211,11 @@ public class DataBaseManager {
         }
 
         public static void main(String args[]) {
-                Scanner s = new Scanner(System.in);
+              /*   Scanner s = new Scanner(System.in);
                 System.out.println("ingrese un numero distinto de 1 \n");
                 int crear = s.nextInt();
                 if (crear == 1)
-                        CreateDatabase();
+                        CreateDatabase(); */
 
                 int user_input = -1;
                 boolean menu_detallado = false;
