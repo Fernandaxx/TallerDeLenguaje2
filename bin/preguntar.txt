@@ -1,0 +1,5 @@
+una clase por item
+Estamos siguiendo el patron dao correctamente?
+separar activo cripto de fiat- o seguir con boolean esCripto
+como Activo es abstracta use Obtenernomenclatura para saber independientemente de la moneda
+verificar stock tanto la cripto envio y la recepcion se verifican en mis activos? o la recepcion es de la billetera/moneda

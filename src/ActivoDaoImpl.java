@@ -1,8 +1,6 @@
 import java.sql.*;
 import java.util.*;
 
-import org.sqlite.SQLiteException;
-
 public class ActivoDaoImpl implements ActivoDAO {
 
     private boolean nomenclaturaExiste(Connection c, String nomenclatura, String tipo) throws SQLException {
@@ -16,7 +14,7 @@ public class ActivoDaoImpl implements ActivoDAO {
         }
     }
 
-    private boolean activoExiste(Connection c, String nomenclatura, boolean esCripto) throws SQLException {
+    public boolean activoExiste(Connection c, String nomenclatura, boolean esCripto) throws SQLException {
         String tableName = esCripto ? "ACTIVO_CRIPTO" : "ACTIVO_FIAT";
         String sql = "SELECT CANTIDAD FROM " + tableName + " WHERE NOMENCLATURA = ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -27,18 +25,7 @@ public class ActivoDaoImpl implements ActivoDAO {
         }
     }
 
-    public boolean verificarActivoExistente(Connection c, String nomenclatura) throws SQLiteException {
-        String sql = "SELECT CANTIDAD FROM ACTIVO_CRIPTO WHERE NOMENCLATURA = ?";
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-            pstmt.setString(1, nomenclatura);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.next();
-            }
-        }
-
-    }
-
-    private void actualizarActivo(Connection c, Activo activo, boolean esCripto) throws SQLException {
+    public void actualizarActivo(Connection c, Activo activo, boolean esCripto) throws SQLException {
         String tableName = esCripto ? "ACTIVO_CRIPTO" : "ACTIVO_FIAT";
         String sql = "UPDATE " + tableName + " SET CANTIDAD = CANTIDAD + ? WHERE NOMENCLATURA = ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -151,27 +138,15 @@ public class ActivoDaoImpl implements ActivoDAO {
 
     }
 
-}
+    public boolean verificarStock(Connection c, String nomenclatura, double cantidad) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM ACTIVO_CRIPTO WHERE NOMENCLATURA = ? AND CANTIDAD >= ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, nomenclatura);
+            pstmt.setDouble(2, cantidad);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        }
+    }
 
-/*
- * // Método auxiliar para obtener un activo existente
- * public Activo obtenerActivo(String nomenclatura, boolean esCripto) throws
- * SQLException {
- * String tableName = esCripto ? "ACTIVO_CRIPTO" : "ACTIVO_FIAT";
- * String sql = "SELECT CANTIDAD FROM " + tableName + " WHERE NOMENCLATURA = ?";
- * 
- * try (Connection conn = getConnection();
- * PreparedStatement pstmt = conn.prepareStatement(sql)) {
- * 
- * pstmt.setString(1, nomenclatura);
- * try (ResultSet rs = pstmt.executeQuery()) {
- * if (rs.next()) {
- * double cantidad = rs.getDouble("CANTIDAD");
- * return esCripto ? new ActivoCripto(nomenclatura, cantidad) : new
- * ActivoFiat(nomenclatura, cantidad);
- * }
- * return null;
- * }
- * }
- * }
- */
+}

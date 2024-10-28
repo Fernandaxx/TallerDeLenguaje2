@@ -1,3 +1,4 @@
+import java.sql.Connection;
 
 public interface ActivoDAO {
     void generarActivo(Activo activo);

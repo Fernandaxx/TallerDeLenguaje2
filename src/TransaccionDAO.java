@@ -1,5 +1,5 @@
 public interface TransaccionDAO {
 
-    void simularSwap();
+    void simularSwap(Criptomoneda criptoInicial, double cantidad, Criptomoneda criptoFinal);
 
 }
