@@ -1,6 +1,8 @@
 import java.sql.*;
 import java.util.*;
 
+import org.sqlite.SQLiteException;
+
 public class ActivoDaoImpl implements ActivoDAO {
 
     private boolean nomenclaturaExiste(Connection c, String nomenclatura, String tipo) throws SQLException {
@@ -23,6 +25,17 @@ public class ActivoDaoImpl implements ActivoDAO {
                 return rs.next();
             }
         }
+    }
+
+    public boolean verificarActivoExistente(Connection c, String nomenclatura) throws SQLiteException {
+        String sql = "SELECT CANTIDAD FROM ACTIVO_CRIPTO WHERE NOMENCLATURA = ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, nomenclatura);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+
     }
 
     private void actualizarActivo(Connection c, Activo activo, boolean esCripto) throws SQLException {
