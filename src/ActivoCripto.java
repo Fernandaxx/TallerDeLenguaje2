@@ -8,7 +8,6 @@ public class ActivoCripto extends Activo {
 
     public ActivoCripto() {
         super();
-
     }
 
     public ActivoCripto(double cantidad, String Nomenclatura) {
