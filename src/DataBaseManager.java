@@ -225,10 +225,8 @@ public class DataBaseManager {
                         } else {
                                 printMenu();
                         }
-
                         System.out.println("Ingrese una opcion: ");
                         user_input = s.nextInt();
-
                         switch (user_input) {
                                 case 1:
                                         crearMonedas();
