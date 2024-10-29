@@ -215,7 +215,7 @@ public class DataBaseManager {
                 System.out.println("ingrese un numero distinto de 1 \n");
                 int crear = s.nextInt();
                 if (crear == 1)
-                        CreateDatabase(); 
+                        CreateDatabase();
 
                 int user_input = -1;
                 boolean menu_detallado = false;
