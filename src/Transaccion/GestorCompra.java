@@ -9,26 +9,26 @@ import java.util.Scanner;
 import Activo.ActivoFiatDAO;
 import Moneda.Criptomoneda;
 import Moneda.Fiat;
-import Moneda.MonedaDAOnew;
+import Moneda.MonedaDAO;
+
 //hay que arreglar porque ingresa por teclado y modifica la base en la misma clase
 public class GestorCompra {
-    private ActivoFiatDAO activoFiatDAO; 
+    private ActivoFiatDAO activoFiatDAO;
     private ActivoCriptoDAO activoCriptoDAO;
     private TransaccionDAO transaccionDAO;
-    private MonedaDAOnew monedaDAO;
+    private MonedaDAO monedaDAO;
 
     private void generarCompra(Connection c, Compra compra) throws SQLException {
 
-        ActivoCripto activo = new ActivoCripto(compra.getCantidad(),compra.getCripto().getNomenclatura());
-        
-        if (!activoCriptoDAO.activoExiste(c, compra.getCripto().getNomenclatura()) ){ 
+        ActivoCripto activo = new ActivoCripto(compra.getCantidad(), compra.getCripto().getNomenclatura());
+
+        if (!activoCriptoDAO.activoExiste(c, compra.getCripto().getNomenclatura())) {
             activoCriptoDAO.generarActivoCripto(activo);
-        }
-        else{
+        } else {
             activoCriptoDAO.actualizarActivo(c, activo);
         }
-        monedaDAO.actualizarMoneda(c, -compra.getCantidad() , compra.getCripto().getNomenclatura());
-        
+        monedaDAO.actualizarMoneda(c, -compra.getCantidad(), compra.getCripto().getNomenclatura());
+
     }
 
     public void simularCompra(Criptomoneda cripto, Fiat fiat, double cantidad) {
@@ -43,7 +43,7 @@ public class GestorCompra {
                 throw new Exception("Moneda no existente");
             }
             // verifica si se tiene sufuciente activoFiat
-            if (!activoFiatDAO.verificarCantidad(c,algoFiat,cantidad)) {
+            if (!activoFiatDAO.verificarCantidad(c, fiat.getNomenclatura(), cantidad)) {
                 throw new Exception("Saldo insuficiente");
             }
 
@@ -63,8 +63,9 @@ public class GestorCompra {
             System.out.println("\n¿Está seguro que desea comprar este activo? (y/n)");
             String confirmacion = s.nextLine();
             if (confirmacion.equalsIgnoreCase("y")) {
-                Compra compra = new Compra(LocalDateTime.now(),fiat.getNomenclatura(),cripto.getNomenclatura(),cantidad);
-                generarCompra(c,compra);
+                Compra compra = new Compra(LocalDateTime.now(), fiat.getNomenclatura(), cripto.getNomenclatura(),
+                        cantidad);
+                generarCompra(c, compra);
                 System.out.println("Moneda comprada exitosamente");
             } else {
                 System.out.println("Operación cancelada");

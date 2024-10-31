@@ -23,4 +23,5 @@ aclarar que se carga criptomoneda con solo nomenclatura para simplificar
 nos gustaria separar stock de Moneda 
 nomenclaturaspermitidas -> se pueden agregar mas si la billetera crece por que es una constante
 aclarar que valor en dolar es metodo en uml y variable aca
+algunos retornos de error decimos cambiarlos a ultima hora para no imprimir en las clases dao
 

@@ -96,9 +96,9 @@ public class BilleteraVirtualManager {
                     Criptomoneda cripto = new Criptomoneda();
                     cripto.setNomenclatura(nomenclatura);
                     activoCripto.setCripto(cripto);
-
-                    activoCriptoOp.generarActivoCripto(activoCripto);
-
+                    if (!activoCriptoOp.generarActivoCripto(activoCripto)) {
+                        System.out.println("Error en el ingreso ");
+                    }
                     break;
                 case 2: // Fiat
                     ActivoFiat activoFiat = new ActivoFiat();
@@ -109,13 +109,14 @@ public class BilleteraVirtualManager {
                     // fiat.setNombre(s.nextLine());
                     fiat.setNomenclatura(nomenclatura);
                     activoFiat.setFiat(fiat);
-                    activoFiatOp.generarActivoFiat(activoFiat);
+                    if (!activoFiatOp.generarActivoFiat(activoFiat)) {
+                        System.out.println("Error en el ingreso ");
+                    }
                     break;
                 default:
                     System.out.println("Opción de Activo no válida");
                     return;
             }
-            System.out.println("Activo ingresado exitosamente");
 
         } else {
             System.out.println("Operación cancelada");
@@ -158,7 +159,6 @@ public class BilleteraVirtualManager {
             default:
                 System.out.println("Tipo de Activo inválido");
         }
-
     }
 
     private void listarStock(Scanner s) {
@@ -205,7 +205,7 @@ public class BilleteraVirtualManager {
     }
 
     private void listarMonedas(Scanner s) {
-        // boolean esCripto = false;
+
         boolean ordenarPorNomenclatura = false;
         System.out.println("===== Listar Monedas =====");
         System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
@@ -223,9 +223,9 @@ public class BilleteraVirtualManager {
             lista.sort(new ComparatorNomenclaturaMoneda());
         } else
             lista.sort(new ComparatorValorDolar());
-        for (Moneda act : lista) {
-            System.out.println(act.toString());
-        }
+
+        System.out.println(lista);
+
     }
 
     private void generarMonedas(Scanner s) {
@@ -289,6 +289,15 @@ public class BilleteraVirtualManager {
         }
     }
 
+    private void generarStock(Scanner s) {
+        System.out.println("¿Desea generar una cantidad de monedas random para la billetera? (y/n)");
+        boolean generar = s.nextLine().equalsIgnoreCase("y");
+        if (generar) {
+            List<String> lista = monedaOp.generarStock();
+            System.out.println(lista);
+        }
+    }
+
     public void iniciar() {
         Scanner s = new Scanner(System.in);
         int user_input = -1;
@@ -307,10 +316,10 @@ public class BilleteraVirtualManager {
                     generarMonedas(s);
                     break;
                 case 2:
-
+                    listarMonedas(s);
                     break;
                 case 3:
-
+                    generarStock(s);
                     break;
                 case 4:
                     listarStock(s);

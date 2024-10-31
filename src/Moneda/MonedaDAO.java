@@ -2,6 +2,7 @@ package Moneda;
 
 import java.sql.*;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 //Borrar la anterior y el new
 public class MonedaDAO implements IMonedaDAO {
@@ -126,7 +127,6 @@ public class MonedaDAO implements IMonedaDAO {
         try {
             Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
             while (rs.next()) {
@@ -151,37 +151,35 @@ public class MonedaDAO implements IMonedaDAO {
         return monedas;
     }
 
-    // @Override
-    // public void generarStock() {
+    @Override
+    public List<String> generarStock() {
+        List<String> informe = new LinkedList<String>();
+        try {
+            Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
+            c.setAutoCommit(false);
+            String sql = "UPDATE MONEDA SET STOCK = ? WHERE NOMENCLATURA = ?";
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            while (rs.next()) {
+                if (rs.getString("TIPO").charAt(0) == 'C') {
+                    String nomenclatura = rs.getString("NOMENCLATURA");
+                    double numeroAleatorio = ThreadLocalRandom.current().nextDouble(0.0, 1000.0);
+                    numeroAleatorio = Math.round(numeroAleatorio * 100.0) / 100.0;
 
-    // try {
-    // Connection c =
-    // DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-    // c.setAutoCommit(false);
-    // System.out.println("Opened database successfully");
-    // String sql = "UPDATE MONEDA SET STOCK = ? WHERE NOMENCLATURA = ?";
-    // Statement stmt = c.createStatement();
-    // ResultSet rs = stmt.executeQuery("SELECT FROM MONEDA");
-    // PreparedStatement pstmt = c.prepareStatement(sql);
-    // while (rs.next()) {
-    // if (rs.getString("TIPO").charAt(0) == 'C') {
-    // String nomenclatura = rs.getString("NOMENCLATURA");
-    // double numeroAleatorio = ThreadLocalRandom.current().nextDouble(0.0, 1000.0);
-    // numeroAleatorio = Math.round(numeroAleatorio 100.0) / 100.0;
-
-    // pstmt.setDouble(1, numeroAleatorio);
-    // pstmt.setString(2, nomenclatura);
-    // pstmt.executeUpdate();
-    // System.out.println("Stock actualizado para: " + nomenclatura);
-    // }
-    // }
-    // c.commit();
-    // } catch (Exception e) {
-    // System.err.println(e.getClass().getName() + ": " + e.getMessage());
-    // System.exit(1);
-    // }
-    // System.out.println("Operation done successfully");
-    // }
+                    pstmt.setDouble(1, numeroAleatorio);
+                    pstmt.setString(2, nomenclatura);
+                    pstmt.executeUpdate();
+                    informe.add("Stock actualizado para: " + nomenclatura + "\n");
+                }
+            }
+            c.commit();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(1);
+        }
+        return informe;
+    }
 
     @Override
     public List<Stock> listarStock() {
@@ -190,12 +188,13 @@ public class MonedaDAO implements IMonedaDAO {
         List<Stock> stocks = new LinkedList<>();
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            System.out.println("Opened database successfully");
             stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT   FROM MONEDA");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
             while (rs.next()) {
-                Stock stock = new Stock(rs.getString("NOMBRE"), rs.getDouble("STOCK"));
-                stocks.add(stock);
+                if (rs.getString("TIPO").charAt(0) == 'C') {
+                    Stock stock = new Stock(rs.getString("NOMENCLATURA"), rs.getDouble("STOCK"));
+                    stocks.add(stock);
+                }
             }
             rs.close();
             stmt.close();
@@ -212,7 +211,6 @@ public class MonedaDAO implements IMonedaDAO {
         Connection c = null;
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            System.out.println("Opened database successfully");
 
             String sql = "DELETE FROM MONEDA WHERE NOMENCLATURA = ? ";
             PreparedStatement pstmt = c.prepareStatement(sql);
@@ -229,12 +227,6 @@ public class MonedaDAO implements IMonedaDAO {
             System.exit(1);
         }
         System.out.println("Operation done successfully");
-    }
-
-    @Override
-    public void generarStock() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generarStock'");
     }
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IActivoCriptoDAO {
 
-    void generarActivoCripto(ActivoCripto activoCripto);
+    boolean generarActivoCripto(ActivoCripto activoCripto);
 
     List<ActivoCripto> listarActivosCripto();
 

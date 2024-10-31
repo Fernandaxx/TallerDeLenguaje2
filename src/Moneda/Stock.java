@@ -29,4 +29,10 @@ public class Stock {
         this.cantidad = cantidad;
     }
 
+    @Override
+    public String toString() {
+        return " Cantidad de " + nomenclatura + " : " + cantidad + "\n";
+
+    }
+
 }

@@ -7,34 +7,34 @@ import java.util.List;
 public class ActivoCriptoDAO implements IActivoCriptoDAO {
 
     @Override
-    public void generarActivoCripto(ActivoCripto activoCripto) {
+    public boolean generarActivoCripto(ActivoCripto activoCripto) {
+        boolean exito = false;
         if (activoCripto == null) {
             System.out.println("No ingreso un Activo");
-            return;
+            return exito;
         }
 
         Connection c = null;
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            System.out.println("Opened database successfully");
-
             // Verificar si la nomenclatura existe en la tabla MONEDA
             if (!nomenclaturaExiste(c, activoCripto.getCripto().getNomenclatura())) {
-                System.out.println("La nomenclatura " + activoCripto.getCripto().getNomenclatura()
-                        + " no existe como moneda CRIPTOMONEDA");
-                return;
+                return exito;
             }
             // Verificar si el activo ya existe y actualizarlo, o crear uno nuevo
             if (activoExiste(c, activoCripto.getCripto().getNomenclatura())) {
                 actualizarActivo(c, activoCripto);
+                exito = true;
             } else {
                 insertarActivo(c, activoCripto);
+                exito = true;
             }
-
+            c.close();
         } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(1);
         }
+        return exito;
 
     }
 
@@ -84,7 +84,6 @@ public class ActivoCriptoDAO implements IActivoCriptoDAO {
         List<ActivoCripto> activos = new LinkedList<>();
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            System.out.println("Opened database successfully");
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM ACTIVO_CRIPTO");
             while (rs.next()) {
@@ -106,9 +105,6 @@ public class ActivoCriptoDAO implements IActivoCriptoDAO {
         Connection c = null;
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
             String sql = "DELETE FROM ACTIVO_CRIPTO WHERE NOMENCLATURA = ? ";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, nomenclatura);
@@ -117,14 +113,12 @@ public class ActivoCriptoDAO implements IActivoCriptoDAO {
                 // No se encontró el activo con esa nomenclatura
                 throw new RuntimeException("No se encontró el activo cripto: " + nomenclatura);
             }
-            c.commit();
             pstmt.close();
             c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(1);
         }
-        System.out.println("Operation done successfully");
     }
 
     public boolean verificarCantidad(Connection c, String nomenclatura, double cantidad) throws SQLException {

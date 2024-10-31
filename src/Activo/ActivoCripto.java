@@ -3,12 +3,7 @@ package Activo;
 import Moneda.Criptomoneda;
 
 public class ActivoCripto extends Activo {
-    private String direccion;
     private Criptomoneda cripto = new Criptomoneda();
-
-    public String getDireccion() {
-        return direccion;
-    }
 
     public ActivoCripto() {
         super();
@@ -20,14 +15,9 @@ public class ActivoCripto extends Activo {
 
     }
 
-    public ActivoCripto(double cantidad, String direccion, Criptomoneda cripto) {
+    public ActivoCripto(double cantidad, Criptomoneda cripto) {
         super(cantidad);
-        this.direccion = direccion;
         this.cripto = cripto;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
     }
 
     public Criptomoneda getCripto() {
@@ -36,6 +26,11 @@ public class ActivoCripto extends Activo {
 
     public void setCripto(Criptomoneda cripto) {
         this.cripto = cripto;
+    }
+
+    @Override
+    public String toString() {
+        return "ActivoCripto " + cripto.getNomenclatura() + " : " + super.getCantidad();
     }
 
 }

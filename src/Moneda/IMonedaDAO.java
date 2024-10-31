@@ -8,7 +8,7 @@ public interface IMonedaDAO {
 
     List<Moneda> listarMonedas();
 
-    void generarStock();
+    List<String> generarStock();
 
     List<Stock> listarStock();
 

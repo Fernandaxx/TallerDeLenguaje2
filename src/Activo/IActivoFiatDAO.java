@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IActivoFiatDAO {
 
-    void generarActivoFiat(ActivoFiat activoFiat);
+    boolean generarActivoFiat(ActivoFiat activoFiat);
 
     List<ActivoFiat> listarActivosFiat();
 

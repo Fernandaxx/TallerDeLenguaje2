@@ -7,36 +7,33 @@ import java.util.List;
 public class ActivoFiatDAO implements IActivoFiatDAO {
 
     @Override
-    public void generarActivoFiat(ActivoFiat activoFiat) {
+    public boolean generarActivoFiat(ActivoFiat activoFiat) {
+        boolean exito = false;
         if (activoFiat == null) {
             System.out.println("No ingreso un Activo");
-            return;
+            return exito;
         }
-
         Connection c = null;
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
             // Verificar si la nomenclatura existe en la tabla MONEDA
             if (!nomenclaturaExiste(c, activoFiat.getFiat().getNomenclatura())) {
-                System.out.println("La nomenclatura " + activoFiat.getFiat().getNomenclatura()
-                        + " no existe como moneda FIAT");
-                return;
+                return exito;
             }
             // Verificar si el activo ya existe y actualizarlo, o crear uno nuevo
             if (activoExiste(c, activoFiat.getFiat().getNomenclatura())) {
                 actualizarActivo(c, activoFiat);
+                exito = true;
             } else {
                 insertarActivo(c, activoFiat);
+                exito = true;
             }
-            c.commit();
-
+            c.close();
         } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(1);
         }
+        return exito;
 
     }
 
@@ -85,8 +82,6 @@ public class ActivoFiatDAO implements IActivoFiatDAO {
         List<ActivoFiat> activos = new LinkedList<>();
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM ACTIVO_FIAT");
             while (rs.next()) {
@@ -108,25 +103,31 @@ public class ActivoFiatDAO implements IActivoFiatDAO {
         Connection c = null;
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
             String sql = "DELETE FROM ACTIVO_FIAT WHERE NOMENCLATURA = ? ";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, nomenclatura);
             int filasAfectadas = pstmt.executeUpdate();
             if (filasAfectadas == 0) {
                 // No se encontró el activo con esa nomenclatura
-                throw new RuntimeException("No se encontró el activo cripto: " + nomenclatura);
+                throw new RuntimeException("No se encontró el activo fiat: " + nomenclatura);
             }
-            c.commit();
             pstmt.close();
             c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(1);
         }
-        System.out.println("Operation done successfully");
+    }
+
+    public boolean verificarCantidad(Connection c, String nomenclatura, double cantidad) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM ACTIVO_FIAT WHERE NOMENCLATURA = ? AND CANTIDAD >= ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, nomenclatura);
+            pstmt.setDouble(2, cantidad);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        }
     }
 
 }

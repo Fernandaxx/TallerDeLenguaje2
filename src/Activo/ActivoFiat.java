@@ -3,7 +3,7 @@ package Activo;
 import Moneda.Fiat;
 
 public class ActivoFiat extends Activo {
-    private Fiat fiat;
+    private Fiat fiat = new Fiat();
 
     public Fiat getFiat() {
         return fiat;
@@ -15,7 +15,7 @@ public class ActivoFiat extends Activo {
     }
 
     public ActivoFiat(double cantidad, String nomenclatura) {
-        super(cantidad);
+        super.setCantidad(cantidad);
         this.fiat.setNomenclatura(nomenclatura);
     }
 
@@ -25,6 +25,11 @@ public class ActivoFiat extends Activo {
 
     public void setFiat(Fiat fiat) {
         this.fiat = fiat;
+    }
+
+    @Override
+    public String toString() {
+        return "ActivoFiat " + fiat.getNomenclatura() + " : " + super.getCantidad();
     }
 
 }

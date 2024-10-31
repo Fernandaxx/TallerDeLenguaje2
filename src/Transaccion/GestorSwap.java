@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 import Activo.ActivoCripto;
 import Activo.ActivoCriptoDAO;
 import Moneda.Criptomoneda;
-import Moneda.MonedaDAOnew;
+import Moneda.MonedaDAO;
 
 public class GestorSwap {
     private ActivoCriptoDAO activoDAO = new ActivoCriptoDAO();
-    private MonedaDAOnew monedaDAO = new MonedaDAOnew();
+    private MonedaDAO monedaDAO = new MonedaDAO();
     private TransaccionDAO transaccionDAO = new TransaccionDAO();
 
     public void simularSwap(Criptomoneda criptoInicial, double cantidad, Criptomoneda criptoFinal) {
