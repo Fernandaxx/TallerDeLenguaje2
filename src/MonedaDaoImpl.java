@@ -1,3 +1,8 @@
+import Comparadores.ComparatorNomenclaturaMoneda;
+import Comparadores.ComparatorValorDolar;
+import Moneda.Criptomoneda;
+import Moneda.Fiat;
+import Moneda.Moneda;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,64 +12,75 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import Comparadores.ComparatorNomenclaturaMoneda;
-import Comparadores.ComparatorValorDolar;
-import Moneda.Criptomoneda;
-import Moneda.Fiat;
-import Moneda.Moneda;
-
 public class MonedaDaoImpl implements MonedaDAO {
 
-    public double equivalenteDolar(Connection c, String nomenclatura) throws SQLException {
+    public double equivalenteDolar(Connection c, String nomenclatura){
+        double valor = -1;
         String sql = "SELECT VALOR_DOLAR FROM MONEDA WHERE NOMENCLATURA = ?";
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-            pstmt.setString(1, nomenclatura);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.getDouble("VALOR_DOLAR");
-            }
+        try{
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setString(1,nomenclatura);
+            ResultSet rs = pstmt.executeQuery();
+            valor = rs.getDouble("VALOR_DOLAR");
         }
+        catch (SQLException e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(1);
+        }
+        return valor;
     }
 
-    public boolean monedaExiste(Connection c, String nomenclatura, boolean esCripto) throws SQLException {
-        String sql = "SELECT 1 FROM MONEDA WHERE NOMENCLATURA = ? AND TIPO = ?";
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+    public boolean monedaExiste(Connection c, String nomenclatura) {
+        boolean existe = false;
+        String sql = "SELECT 1 FROM MONEDA WHERE NOMENCLATURA = ?";
+        try {
+            PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, nomenclatura);
-            pstmt.setString(2, esCripto ? "C" : "F");
-            return pstmt.executeQuery().next();
+            existe= pstmt.executeQuery().next();
         }
+        catch (SQLException e){
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(1);
+        }
+        return existe;
     }
 
-    private void actualizarMoneda(Connection c, Moneda moneda, boolean esCripto) throws SQLException {
-        String sql = esCripto
-                ? "UPDATE MONEDA SET VALOR_DOLAR = ?, VOLATILIDAD = ?, STOCK = ? WHERE NOMENCLATURA = ?"
-                : "UPDATE MONEDA SET VALOR_DOLAR = ? WHERE NOMENCLATURA = ?";
-
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+    private void actualizarMoneda(Connection c,Moneda moneda) {     
+        try  {
+            PreparedStatement pstmt = c.prepareStatement(moneda instanceof Criptomoneda
+            ? "UPDATE MONEDA SET VALOR_DOLAR = ?, VOLATILIDAD = ?, STOCK = ? WHERE NOMENCLATURA = ?"
+            : "UPDATE MONEDA SET VALOR_DOLAR = ? WHERE NOMENCLATURA = ?" );
             pstmt.setDouble(1, moneda.getValor_dolar());
-
-            if (esCripto) {
-                Criptomoneda cripto = (Criptomoneda) moneda;
-                pstmt.setDouble(2, cripto.getVolatilidad());
-                pstmt.setDouble(3, cripto.getStock());
+            if (moneda instanceof Criptomoneda){
+                Criptomoneda cripto=(Criptomoneda)moneda;
+                pstmt.setDouble(2,cripto.getVolatilidad());
+                pstmt.setDouble(3,cripto.getStock());
+                pstmt.setString(4,cripto.getNomenclatura());
             }
+            else pstmt.setString(2,moneda.getNomenclatura());
 
             pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(1);
+        }     
             System.out.println("Moneda actualizada exitosamente.");
         }
-    }
 
-    private void insertarMoneda(Connection c, Moneda moneda, boolean esCripto) throws SQLException {
-        String sql = esCripto
-                ? "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR, VOLATILIDAD, STOCK) VALUES (?, ?, ?, ?, ?, ?)"
-                : "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR) VALUES (?, ?, ?, ?)";
 
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+    private void insertarMoneda(Connection c, Moneda moneda) throws SQLException {
+        
+        try  {
+            PreparedStatement pstmt = c.prepareStatement(moneda instanceof Criptomoneda
+            ? "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR, VOLATILIDAD, STOCK) VALUES (?, ?, ?, ?, ?, ?)"
+                : "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR) VALUES (?, ?, ?, ?)");
             pstmt.setString(1, String.valueOf(moneda.getTipo()));
             pstmt.setString(2, moneda.getNombre());
             pstmt.setString(3, moneda.getNomenclatura());
             pstmt.setDouble(4, moneda.getValor_dolar());
 
-            if (esCripto) {
+            if (moneda instanceof Criptomoneda) {
                 Criptomoneda cripto = (Criptomoneda) moneda;
                 pstmt.setDouble(5, cripto.getVolatilidad());
                 pstmt.setDouble(6, cripto.getStock());
@@ -72,6 +88,9 @@ public class MonedaDaoImpl implements MonedaDAO {
 
             pstmt.executeUpdate();
             System.out.println("Moneda insertada exitosamente.");
+        } catch (SQLException e){
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(1);
         }
     }
 
@@ -81,18 +100,16 @@ public class MonedaDaoImpl implements MonedaDAO {
             System.err.println("No ingreso una moneda");
             return;
         }
-        boolean esCripto = moneda instanceof Criptomoneda;
-
         try {
             Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
             // Verificar si la moneda ya existe; actualizar o insertar según sea el caso
-            if (monedaExiste(c, moneda.getNomenclatura(), esCripto)) {
-                actualizarMoneda(c, moneda, esCripto);
+            if (monedaExiste(c, moneda.getNomenclatura())) {
+                actualizarMoneda(c, moneda);
             } else {
-                insertarMoneda(c, moneda, esCripto);
+                insertarMoneda(c, moneda);
             }
             c.commit();
 
@@ -110,10 +127,8 @@ public class MonedaDaoImpl implements MonedaDAO {
             Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
-            borrar(c);
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
-
             while (rs.next()) {
                 Moneda moneda;
                 if (rs.getString("TIPO").charAt(0) == 'C') {

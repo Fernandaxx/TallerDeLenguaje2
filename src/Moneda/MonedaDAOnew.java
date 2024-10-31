@@ -56,20 +56,12 @@ public class MonedaDAOnew implements IMonedaDAO {
         return existe;
     }
 
-    private void actualizarMoneda(Connection c,Moneda moneda) {     
+    public void actualizarMoneda(Connection c, double stock, String nomenclatura) {     
         try  {
-            PreparedStatement pstmt = c.prepareStatement(moneda instanceof Criptomoneda
-            ? "UPDATE MONEDA SET VALOR_DOLAR = ?, VOLATILIDAD = ?, STOCK = ? WHERE NOMENCLATURA = ?"
-            : "UPDATE MONEDA SET VALOR_DOLAR = ? WHERE NOMENCLATURA = ?" );
-            pstmt.setDouble(1, moneda.getValor_dolar());
-            if (moneda instanceof Criptomoneda){
-                Criptomoneda cripto=(Criptomoneda)moneda;
-                pstmt.setDouble(2,cripto.getVolatilidad());
-                pstmt.setDouble(3,cripto.getStock());
-                pstmt.setString(4,cripto.getNomenclatura());
-            }
-            else pstmt.setString(2,moneda.getNomenclatura());
-
+            String sql = "UPDATE MONEDA SET  STOCK = STOCK + ? WHERE NOMENCLATURA = ?";
+            PreparedStatement pstmt = c.prepareStatement(sql);
+            pstmt.setDouble(1, stock);
+            pstmt.setString(2,nomenclatura);
             pstmt.executeUpdate();
         }
         catch (SQLException e) {
@@ -116,8 +108,9 @@ public class MonedaDAOnew implements IMonedaDAO {
             System.out.println("Opened database successfully");
 
             // Verificar si la moneda ya existe; actualizar o insertar según sea el caso
-            if (monedaExiste(c, moneda.getNomenclatura())) {
-                actualizarMoneda(c, moneda);
+            if (monedaExiste(c, moneda.getNomenclatura()) && (moneda instanceof Criptomoneda)) {
+                Criptomoneda cripto = (Criptomoneda)moneda;
+                actualizarMoneda(c, cripto.getStock(),cripto.getNomenclatura());
             } else {
                 insertarMoneda(c, moneda);
             }

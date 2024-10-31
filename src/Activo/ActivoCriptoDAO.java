@@ -1,8 +1,8 @@
 package Activo;
 
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
-import java.sql.*;
 
 public class ActivoCriptoDAO implements IActivoCriptoDAO {
 
@@ -50,7 +50,7 @@ public class ActivoCriptoDAO implements IActivoCriptoDAO {
         }
     }
 
-    public boolean activoExiste(Connection c, String nomenclatura) throws SQLException {
+    public boolean activoExiste(Connection c, String nomenclatura) throws SQLException{
         String sql = "SELECT CANTIDAD FROM ACTIVO_CRIPTO WHERE NOMENCLATURA = ?";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
             pstmt.setString(1, nomenclatura);
