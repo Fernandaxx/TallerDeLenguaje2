@@ -4,6 +4,7 @@ como Activo es abstracta use Obtenernomenclatura para saber independientemente d
 verificar stock tanto la cripto envio y la recepcion se verifican en mis activos? o la recepcion es de la billetera/moneda
 comparator nomenclatura para activo y moneda, se pueden generalizar?
 esta bien preguntar si confirma en el menu y llamar al metodo o es en el metodo
+<<<<<<< HEAD
 
 
   private boolean nomenclaturaExiste(Connection c, String nomenclatura) throws SQLException {
@@ -18,3 +19,6 @@ esta bien preguntar si confirma en el menu y llamar al metodo o es en el metodo
 
 
 eliminar stock de la Moneda
+=======
+imprimir adentro de monedaDaoImpl
+>>>>>>> f275ff42dd13d7d32ba07014803ae337681960f5

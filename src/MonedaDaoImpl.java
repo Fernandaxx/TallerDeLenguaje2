@@ -101,17 +101,6 @@ public class MonedaDaoImpl implements MonedaDAO {
             System.exit(1);
         }
     }
-    /*
-     * private void borrar(Connection c){
-     * try{
-     * Statement stmt = c.createStatement();
-     * ResultSet rs = stmt.executeQuery("DELETE FROM MONEDA WHERE TIPO=b");
-     * }
-     * catch(Exception e) {
-     * System.err.println(e.getClass().getName() + ": " + e.getMessage());
-     * System.exit(1);
-     * }}
-     */
 
     @Override
     public void ListarMonedas(boolean ordenarPorNomenclatura) {
