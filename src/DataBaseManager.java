@@ -104,6 +104,14 @@ public class DataBaseManager {
                 System.out.print("\nSeleccione una opción: ");
         }
 
+        private static void mostrarResumenMoneda(Moneda moneda) {
+                System.out.println("\nResumen de la moneda a ingresar:");
+                System.err.println("Tipo: " + moneda.getTipo());
+                System.out.println("Nombre: " + moneda.getNombre());
+                System.out.println("Nomenclatura: " + moneda.getNomenclatura());
+
+        }
+
         private static void crearMonedas() {
                 Scanner s = new Scanner(System.in);
 
@@ -132,14 +140,12 @@ public class DataBaseManager {
                                 System.out.println("Ingrese Stock de la moneda:");
                                 double stock = s.nextDouble();
                                 s.nextLine();
-                                Criptomoneda criptomoneda = new Criptomoneda('C', nombre, nomenclatura, valorDolar,
+                                moneda = new Criptomoneda('C', nombre, nomenclatura, valorDolar,
                                                 volatilidad, stock);
-                                moneda = criptomoneda;
                                 break;
 
                         case 2: // Fiat
-                                Fiat fiat = new Fiat('F', nombre, nomenclatura, valorDolar);
-                                moneda = fiat;
+                                moneda = new Fiat('F', nombre, nomenclatura, valorDolar);
                                 break;
 
                         default:
@@ -147,20 +153,18 @@ public class DataBaseManager {
                                 s.close();
                                 return;
                 }
-
-                // Mostrar resumen usando el método obtenerNomenclatura()
-                System.out.println("\nResumen de la moneda a ingresar:");
-                System.err.println("Tipo: " + moneda.getTipo());
-                System.out.println("Nombre: " + moneda.getNombre());
-                System.out.println("Nomenclatura: " + moneda.getNomenclatura());
-
+                mostrarResumenMoneda(moneda);
                 System.out.println(
                                 "\n¿Está seguro que desea ingresar la moneda a la base de datos? (y/n)");
 
                 String confirmacion = s.nextLine();
                 if (confirmacion.equalsIgnoreCase("y")) {
                         MonedaDAO generar = new MonedaDaoImpl();
-                        generar.generarMoneda(moneda);
+                        if (moneda instanceof Criptomoneda criptomoneda)
+                                generar.generarMonedaCripto(criptomoneda);
+                        else
+                                generar.generarMonedaFiat((Fiat) moneda);
+
                         System.out.println("Moneda ingresada exitosamente");
 
                 } else {
@@ -169,27 +173,24 @@ public class DataBaseManager {
                 s.close();
         }
 
-        private static void listarMonedas() {
-                Scanner s = new Scanner(System.in);
+        private static void listarMonedas(Scanner s) {
                 // boolean esCripto = false;
                 boolean ordenarPorNomenclatura = false;
                 System.out.println("===== Listar Monedas =====");
                 System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
-                String ordenar = s.nextLine();
+                String ordenar = s.next();
                 if (ordenar.equals("y")) {
                         ordenarPorNomenclatura = true;
                 } else if (ordenar.equals("n")) {
                         ordenarPorNomenclatura = false;
                 } else {
                         System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
-                        s.close();
                         return;
                 }
 
                 MonedaDAO listar = new MonedaDaoImpl();
                 listar.ListarMonedas(ordenarPorNomenclatura);
                 System.out.println("Listado generado.");
-                s.close();
         }
 
         private static void generarCompra() {
@@ -197,7 +198,7 @@ public class DataBaseManager {
 
                 System.out.println("=== Comprar criptomoneda ===");
                 System.out.println("¿Qué criptomoneda desea comprar?");
-                listarMonedas();
+                listarMonedas(s);
                 System.out.println("Ingrese nomenclatura de la moneda:");
                 String nomenclaturaCripto = s.next();
                 System.out.println("¿Con que Fiat desea comprar?");
@@ -206,17 +207,11 @@ public class DataBaseManager {
                 String nomenclaturaFiat = s.next();
                 System.out.println("Ingrese cantidad de Fiat para comprar:");
                 Double cantidad = s.nextDouble();
-
                 s.close();
         }
 
         public static void main(String args[]) {
                 Scanner s = new Scanner(System.in);
-                System.out.println("ingrese un numero distinto de 1 \n");
-                int crear = s.nextInt();
-                if (crear == 1)
-                        CreateDatabase();
-
                 int user_input = -1;
                 boolean menu_detallado = false;
                 while (user_input != 0) {
@@ -225,10 +220,8 @@ public class DataBaseManager {
                         } else {
                                 printMenu();
                         }
-
                         System.out.println("Ingrese una opcion: ");
                         user_input = s.nextInt();
-
                         switch (user_input) {
                                 case 1:
                                         crearMonedas();
@@ -237,7 +230,8 @@ public class DataBaseManager {
                                 case 2:
                                         System.out.println("Usuario opina 2.");
                                         System.out.println("Llamar a funcion 2.");
-                                        listarMonedas();
+                                        listarMonedas(s);
+                                        System.out.println("????");
                                         break;
                                 case 3:
                                         System.out.println("Usuario opina 3.");
@@ -388,7 +382,7 @@ public class DataBaseManager {
                                         break;
 
                                 default:
-                                        System.out.println("Usuario no sabe leer un simple menu.");
+                                        System.out.println("Numero ingresado invalido.");
                                         System.out.println("Try again.");
                                         break;
                         }

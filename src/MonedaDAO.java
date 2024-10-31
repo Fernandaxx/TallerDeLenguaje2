@@ -1,3 +1,5 @@
+import Moneda.Moneda;
+
 public interface MonedaDAO {
     void generarMoneda(Moneda moneda);
 

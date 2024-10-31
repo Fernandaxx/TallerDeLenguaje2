@@ -7,13 +7,19 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import Comparadores.ComparatorNomenclaturaMoneda;
+import Comparadores.ComparatorValorDolar;
+import Moneda.Criptomoneda;
+import Moneda.Fiat;
+import Moneda.Moneda;
+
 public class MonedaDaoImpl implements MonedaDAO {
 
-    public double equivalenteDolar(Connection c, String nomenclatura)throws SQLException{
+    public double equivalenteDolar(Connection c, String nomenclatura) throws SQLException {
         String sql = "SELECT VALOR_DOLAR FROM MONEDA WHERE NOMENCLATURA = ?";
-        try (PreparedStatement pstmt = c.prepareStatement(sql)){
-            pstmt.setString(1,nomenclatura);
-            try (ResultSet rs = pstmt.executeQuery()){
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, nomenclatura);
+            try (ResultSet rs = pstmt.executeQuery()) {
                 return rs.getDouble("VALOR_DOLAR");
             }
         }
@@ -95,19 +101,21 @@ public class MonedaDaoImpl implements MonedaDAO {
             System.exit(1);
         }
     }
-    private void borrar(Connection c){
-        try{
-        Statement stmt = c.createStatement();
-        ResultSet rs = stmt.executeQuery("DELETE FROM MONEDA WHERE TIPO=b");
-        }
-        catch(Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(1);
-    }}
+    /*
+     * private void borrar(Connection c){
+     * try{
+     * Statement stmt = c.createStatement();
+     * ResultSet rs = stmt.executeQuery("DELETE FROM MONEDA WHERE TIPO=b");
+     * }
+     * catch(Exception e) {
+     * System.err.println(e.getClass().getName() + ": " + e.getMessage());
+     * System.exit(1);
+     * }}
+     */
 
     @Override
     public void ListarMonedas(boolean ordenarPorNomenclatura) {
-        
+
         List<Moneda> monedas = new LinkedList<>();
         try {
             Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");

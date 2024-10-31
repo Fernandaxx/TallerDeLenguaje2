@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CLI",
+            "request": "launch",
+            "mainClass": "CLI",
+            "projectName": "TallerDeLenguaje2_e146bb12"
+        },
+        {
+            "type": "java",
             "name": "DataBaseManager",
             "request": "launch",
             "mainClass": "DataBaseManager",

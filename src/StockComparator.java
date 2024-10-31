@@ -1,5 +1,7 @@
 import java.util.Comparator;
 
+import Moneda.Moneda;
+
 public class StockComparator implements Comparator<Moneda> {
     @Override
     public int compare(Moneda m1, Moneda m2) {
