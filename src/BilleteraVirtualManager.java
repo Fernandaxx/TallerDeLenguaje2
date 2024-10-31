@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+import java.util.*;
+
+>>>>>>> 9e5845c3df1969827c2ab33634cec0d389bc5ec7
 import Activo.ActivoCripto;
 import Activo.ActivoCriptoDAO;
 import Activo.ActivoFiat;
@@ -24,6 +29,8 @@ public class BilleteraVirtualManager {
     private MonedaDAOnew monedaOp = new MonedaDAOnew();
     private static final String ANSI_CYAN = "\u001B[36m";
     private static final String ANSI_RESET = "\u001B[0m";
+    private static final List<String> nomenclaturasPermitidas = new LinkedList<>(
+            Arrays.asList("BTC", "ETH", "USDC", "DOGE", "USDT", "ARS", "USD", "BS", "EUR", "UYU"));
 
     private static void printMenu() {
         System.out.println("\n=== SISTEMA DE GESTION DE CRIPTOMONEDAS ===\n");
@@ -232,6 +239,72 @@ public class BilleteraVirtualManager {
                     System.out.println(act.toString());
                 }
         }
+
+    private void generarMonedas(Scanner s) {
+
+        System.out.println("=== Ingresar Nueva Moneda ===");
+        System.out.println("¿Qué tipo de moneda desea ingresar?");
+        System.out.println("1. Criptomoneda");
+        System.out.println("2. Fiat");
+        Moneda moneda = null;
+        int tipoMoneda = s.nextInt();
+
+        System.out.println("Ingrese nombre de la moneda:");
+        String nombre = s.next();
+        // s.nextLine();
+        System.out.println("Ingrese nomenclatura de la moneda:");
+        String nomenclatura = s.next();
+        if (!nomenclaturasPermitidas.contains(nomenclatura)) {
+            System.err.println("nomenclaruta invalida");
+            return;
+        }
+        // s.nextLine();
+        System.out.println("Ingrese valor en dolar de la moneda:");
+        double valorDolar = s.nextDouble();
+        s.nextLine();
+
+        switch (tipoMoneda) {
+            case 1: // Criptomoneda
+                System.out.println("Ingrese volatilidad de la moneda:");
+                double volatilidad = s.nextDouble();
+                s.nextLine();
+                System.out.println("Ingrese Stock de la moneda:");
+                double stock = s.nextDouble();
+                s.nextLine();
+                moneda = new Criptomoneda('C', nombre, nomenclatura, valorDolar,
+                        volatilidad, stock);
+                break;
+
+            case 2: // Fiat
+                moneda = new Fiat('F', nombre, nomenclatura, valorDolar);
+                break;
+
+            default:
+                System.out.println("Opción no válida");
+                return;
+        }
+        mostrarResumenMoneda(moneda);
+        System.out.println(
+                "\n¿Está seguro que desea ingresar la moneda a la base de datos? (y/n)");
+
+        String confirmacion = s.nextLine();
+        if (confirmacion.equalsIgnoreCase("y")) {
+            monedaOp.generarMoneda(moneda);
+
+            System.out.println("Moneda ingresada exitosamente");
+
+        } else {
+            System.out.println("Operación cancelada");
+        }
+    }
+
+    private static void mostrarResumenMoneda(Moneda moneda) {
+        System.out.println("\nResumen de la moneda a ingresar:");
+        System.err.println("Tipo: " + moneda.getTipo());
+        System.out.println("Nombre: " + moneda.getNombre());
+        System.out.println("Nomenclatura: " + moneda.getNomenclatura());
+
+    }
 
     public void iniciar() {
         Scanner s = new Scanner(System.in);
