@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-import java.util.*;
-
->>>>>>> 9e5845c3df1969827c2ab33634cec0d389bc5ec7
 import Activo.ActivoCripto;
 import Activo.ActivoCriptoDAO;
 import Activo.ActivoFiat;
@@ -17,18 +12,15 @@ import Comparadores.ComparatorValorDolar;
 import Moneda.Criptomoneda;
 import Moneda.Fiat;
 import Moneda.Moneda;
-import Moneda.MonedaDAOnew;
+import Moneda.MonedaDAO;
 import Moneda.Stock;
 import Transaccion.GestorSwap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class BilleteraVirtualManager {
     private ActivoCriptoDAO activoCriptoOp = new ActivoCriptoDAO();
     private ActivoFiatDAO activoFiatOp = new ActivoFiatDAO();
-    private MonedaDAOnew monedaOp = new MonedaDAOnew();
-    private static final String ANSI_CYAN = "\u001B[36m";
-    private static final String ANSI_RESET = "\u001B[0m";
+    private MonedaDAO monedaOp = new MonedaDAO();
     private static final List<String> nomenclaturasPermitidas = new LinkedList<>(
             Arrays.asList("BTC", "ETH", "USDC", "DOGE", "USDT", "ARS", "USD", "BS", "EUR", "UYU"));
 
@@ -189,10 +181,6 @@ public class BilleteraVirtualManager {
 
     private void simularSwap(Scanner s) {
         System.out.println("======= SWAP =======");
-        System.out.println("\n" + ANSI_CYAN + "╔════════════════════════════════╗");
-        System.out.println("║        CRYPTO SWAP             ║");
-        System.out.println("╚════════════════════════════════╝" + ANSI_RESET + "\n");
-
         System.out.print("Ingrese la criptomoneda que desea intercambiar (ej. BTC): ");
         Criptomoneda cInicial = new Criptomoneda(s.nextLine());
         System.out.print("Ingrese la criptomoneda que desea recibir (ej. ETH): ");
@@ -215,30 +203,30 @@ public class BilleteraVirtualManager {
             System.out.println("Operación cancelada.");
         }
     }
+
     private void listarMonedas(Scanner s) {
-                // boolean esCripto = false;
-                boolean ordenarPorNomenclatura = false;
-                System.out.println("===== Listar Monedas =====");
-                System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
-                String ordenar = s.next();
-                if (ordenar.equals("y")) {
-                        ordenarPorNomenclatura = true;
-                } else if (ordenar.equals("n")) {
-                        ordenarPorNomenclatura = false;
-                } else {
-                        System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
-                        return;
-                }
-                List<Moneda> lista = monedaOp.listarMonedas();
-                if (ordenarPorNomenclatura){
-                    lista.sort(new ComparatorNomenclaturaMoneda());
-                }
-                else
-                lista.sort(new ComparatorValorDolar());
-                for (Moneda act : lista){
-                    System.out.println(act.toString());
-                }
+        // boolean esCripto = false;
+        boolean ordenarPorNomenclatura = false;
+        System.out.println("===== Listar Monedas =====");
+        System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
+        String ordenar = s.next();
+        if (ordenar.equals("y")) {
+            ordenarPorNomenclatura = true;
+        } else if (ordenar.equals("n")) {
+            ordenarPorNomenclatura = false;
+        } else {
+            System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
+            return;
         }
+        List<Moneda> lista = monedaOp.listarMonedas();
+        if (ordenarPorNomenclatura) {
+            lista.sort(new ComparatorNomenclaturaMoneda());
+        } else
+            lista.sort(new ComparatorValorDolar());
+        for (Moneda act : lista) {
+            System.out.println(act.toString());
+        }
+    }
 
     private void generarMonedas(Scanner s) {
 
@@ -246,19 +234,21 @@ public class BilleteraVirtualManager {
         System.out.println("¿Qué tipo de moneda desea ingresar?");
         System.out.println("1. Criptomoneda");
         System.out.println("2. Fiat");
-        Moneda moneda = null;
         int tipoMoneda = s.nextInt();
+        s.nextLine();
+
+        Moneda moneda = null;
 
         System.out.println("Ingrese nombre de la moneda:");
-        String nombre = s.next();
-        // s.nextLine();
+        String nombre = s.nextLine();
+
         System.out.println("Ingrese nomenclatura de la moneda:");
-        String nomenclatura = s.next();
+        String nomenclatura = s.nextLine();
         if (!nomenclaturasPermitidas.contains(nomenclatura)) {
-            System.err.println("nomenclaruta invalida");
+            System.err.println("nomenclatura invalida");
             return;
         }
-        // s.nextLine();
+
         System.out.println("Ingrese valor en dolar de la moneda:");
         double valorDolar = s.nextDouble();
         s.nextLine();
@@ -283,27 +273,20 @@ public class BilleteraVirtualManager {
                 System.out.println("Opción no válida");
                 return;
         }
-        mostrarResumenMoneda(moneda);
+        System.out.println(moneda);
         System.out.println(
                 "\n¿Está seguro que desea ingresar la moneda a la base de datos? (y/n)");
 
         String confirmacion = s.nextLine();
         if (confirmacion.equalsIgnoreCase("y")) {
-            monedaOp.generarMoneda(moneda);
-
-            System.out.println("Moneda ingresada exitosamente");
-
+            boolean exito = monedaOp.generarMoneda(moneda);
+            if (exito)
+                System.out.println("Moneda ingresada exitosamente");
+            else
+                System.out.println("Error en el ingreso");
         } else {
             System.out.println("Operación cancelada");
         }
-    }
-
-    private static void mostrarResumenMoneda(Moneda moneda) {
-        System.out.println("\nResumen de la moneda a ingresar:");
-        System.err.println("Tipo: " + moneda.getTipo());
-        System.out.println("Nombre: " + moneda.getNombre());
-        System.out.println("Nomenclatura: " + moneda.getNomenclatura());
-
     }
 
     public void iniciar() {
@@ -321,7 +304,7 @@ public class BilleteraVirtualManager {
             s.nextLine();
             switch (user_input) {
                 case 1:
-
+                    generarMonedas(s);
                     break;
                 case 2:
 

@@ -75,7 +75,7 @@ public class Criptomoneda extends Moneda {
     public String toString() {
         return super.toString() +
                 "\tVolatilidad = " + volatilidad + "\n" +
-                "\t Stock = " + stock + "\n";
+                "\tStock = " + stock + "\n";
     }
 
 }

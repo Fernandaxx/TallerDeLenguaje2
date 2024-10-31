@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 
 public interface IMonedaDAO {
-    void generarMoneda(Moneda moneda);
+    boolean generarMoneda(Moneda moneda);
 
     List<Moneda> listarMonedas();
 
@@ -14,10 +14,10 @@ public interface IMonedaDAO {
 
     void borrarMoneda(String nomenclatura);
 
-    boolean VerificarStock(Connection c, String nomenclatura, double cantidad); //funciona para c o f
+    boolean VerificarStock(Connection c, String nomenclatura, double cantidad);
 
-    public double equivalenteDolar(Connection c, String nomenclatura); // funciona para c o f
+    public double equivalenteDolar(Connection c, String nomenclatura);
 
-    public boolean monedaExiste(Connection c, String nomenclatura); // funciona para c o f
+    public boolean monedaExiste(Connection c, String nomenclatura);
 
 }
