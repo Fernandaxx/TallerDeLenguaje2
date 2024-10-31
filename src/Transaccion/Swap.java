@@ -1,6 +1,6 @@
 package Transaccion;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import Moneda.Criptomoneda;
 
@@ -11,7 +11,7 @@ public class Swap extends Transaccion {
     private double cantidadRecepcion;
 
     public Swap(Criptomoneda criptoEnvio, double cantidad, Criptomoneda criptoRecepcion, double cantidadRecepcion,
-            LocalDate fecha) {
+            LocalDateTime fecha) {
         super(fecha);
         this.criptoEnvio = criptoEnvio;
         this.cantidad = cantidad;

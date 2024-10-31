@@ -2,6 +2,7 @@ package Transaccion;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * La clase abstracta Transaccion representa una transacción dentro del sistema
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 public abstract class Transaccion {
     // private double costoComision;
     // private Duration demora;
-    private LocalDate fecha;
+    private LocalDateTime fecha;
     private String codigo;
 
     /**
@@ -34,7 +35,7 @@ public abstract class Transaccion {
     public abstract void obtenerComision();
     // Lógica para obtener la comisión
 
-    public Transaccion(LocalDate fecha) {
+    public Transaccion(LocalDateTime fecha) {
         // this.costoComision = costoComision;
         // this.demora = demora;
         this.fecha = fecha;
@@ -55,43 +56,31 @@ public abstract class Transaccion {
      * 
      * @return El costo de la comisión.
      */
-    public double getCostoComision() {
-        return costoComision;
-    }
 
     /**
      * Establece el costo de la comisión asociado a la transacción.
      * 
      * @param costoComision El nuevo costo de la comisión.
      */
-    public void setCostoComision(double costoComision) {
-        this.costoComision = costoComision;
-    }
 
     /**
      * Obtiene la demora esperada para la transacción.
      * 
      * @return La demora como una instancia de Duration.
      */
-    public Duration getDemora() {
-        return demora;
-    }
 
     /**
      * Establece la demora esperada para la transacción.
      * 
      * @param demora demora asociada a la transaccion.
      */
-    public void setDemora(Duration demora) {
-        this.demora = demora;
-    }
 
     /**
      * Obtiene la fecha de la transacción.
      * 
      * @return La fecha de la transacción como una instancia de LocalDate.
      */
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
@@ -100,7 +89,7 @@ public abstract class Transaccion {
      * 
      * @param fecha La nueva fecha como una instancia de LocalDate.
      */
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 

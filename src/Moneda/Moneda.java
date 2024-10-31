@@ -37,6 +37,10 @@ public abstract class Moneda {
     public Moneda() {
     }
 
+    public Moneda(String nomenclatura) {
+        this.nomenclatura = nomenclatura;
+    }
+
     /**
      * Obtiene el tipo de la moneda.
      * 

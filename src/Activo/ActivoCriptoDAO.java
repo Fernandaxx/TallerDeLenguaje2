@@ -127,4 +127,15 @@ public class ActivoCriptoDAO implements IActivoCriptoDAO {
         }
         System.out.println("Operation done successfully");
     }
+
+    public boolean verificarCantidad(Connection c, String nomenclatura, double cantidad) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM ACTIVO_CRIPTO WHERE NOMENCLATURA = ? AND CANTIDAD >= ?";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, nomenclatura);
+            pstmt.setDouble(2, cantidad);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        }
+    }
 }

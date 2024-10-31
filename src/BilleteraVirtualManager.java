@@ -14,11 +14,14 @@ import Moneda.Criptomoneda;
 import Moneda.Fiat;
 import Moneda.MonedaDAOnew;
 import Moneda.Stock;
+import Transaccion.GestorSwap;
 
 public class BilleteraVirtualManager {
     private ActivoCriptoDAO activoCriptoOp = new ActivoCriptoDAO();
     private ActivoFiatDAO activoFiatOp = new ActivoFiatDAO();
     private MonedaDAOnew monedaOp = new MonedaDAOnew();
+    private static final String ANSI_CYAN = "\u001B[36m";
+    private static final String ANSI_RESET = "\u001B[0m";
 
     private static void printMenu() {
         System.out.println("\n=== SISTEMA DE GESTION DE CRIPTOMONEDAS ===\n");
@@ -175,6 +178,35 @@ public class BilleteraVirtualManager {
 
     }
 
+    private void simularSwap(Scanner s) {
+        System.out.println("======= SWAP =======");
+        System.out.println("\n" + ANSI_CYAN + "╔════════════════════════════════╗");
+        System.out.println("║        CRYPTO SWAP             ║");
+        System.out.println("╚════════════════════════════════╝" + ANSI_RESET + "\n");
+
+        System.out.print("Ingrese la criptomoneda que desea intercambiar (ej. BTC): ");
+        Criptomoneda cInicial = new Criptomoneda(s.nextLine());
+        System.out.print("Ingrese la criptomoneda que desea recibir (ej. ETH): ");
+        Criptomoneda cFinal = new Criptomoneda(s.nextLine());
+        System.out.print("Ingrese la cantidad que desea intercambiar: ");
+        double cantidad = s.nextDouble();
+        s.nextLine();
+        GestorSwap swap = new GestorSwap();
+        double valorSimulado = swap.valorFinalSwap(cInicial, cantidad, cFinal);
+        System.out.printf("Se ha simulado el intercambio de %.2f %s a %.2f %s.\n",
+                cantidad, cInicial.getNomenclatura(),
+                valorSimulado, cFinal.getNomenclatura());
+        System.out.print("¿Desea confirmar esta operación? (s/n): ");
+        String confirmacion = s.nextLine().toLowerCase();
+
+        if (confirmacion.equals("s")) {
+            swap.simularSwap(cInicial, cantidad, cFinal);
+            System.out.println("Operación completada exitosamente.");
+        } else {
+            System.out.println("Operación cancelada.");
+        }
+    }
+
     public void iniciar() {
         Scanner s = new Scanner(System.in);
         int user_input = -1;
@@ -212,7 +244,7 @@ public class BilleteraVirtualManager {
 
                     break;
                 case 8:
-
+                    simularSwap(s);
                     break;
                 case 9:
                     menu_detallado = !menu_detallado;

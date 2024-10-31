@@ -58,132 +58,144 @@ public class MonedaDAOnew implements IMonedaDAO {
         }
         return existe;
     }
-
-    private void actualizarMonedaCripto(Connection c, Moneda moneda) throws SQLException {
-        String sql = esCripto
-                ? "UPDATE MONEDA SET VALOR_DOLAR = ?, VOLATILIDAD = ?, STOCK = ? WHERE NOMENCLATURA = ?"
-                : "UPDATE MONEDA SET VALOR_DOLAR = ? WHERE NOMENCLATURA = ?";
-
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-            pstmt.setDouble(1, moneda.getValor_dolar());
-
-            if (esCripto) {
-                Criptomoneda cripto = (Criptomoneda) moneda;
-                pstmt.setDouble(2, cripto.getVolatilidad());
-                pstmt.setDouble(3, cripto.getStock());
-            }
-
-            pstmt.executeUpdate();
-            System.out.println("Moneda actualizada exitosamente.");
-        }
-    }
-
-    private void actualizarMonedaFiat(Connection c, Moneda moneda, boolean esCripto) throws SQLException {
-        String sql = esCripto
-                ? "UPDATE MONEDA SET VALOR_DOLAR = ?, VOLATILIDAD = ?, STOCK = ? WHERE NOMENCLATURA = ?"
-                : "UPDATE MONEDA SET VALOR_DOLAR = ? WHERE NOMENCLATURA = ?";
-
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-            pstmt.setDouble(1, moneda.getValor_dolar());
-
-            if (esCripto) {
-                Criptomoneda cripto = (Criptomoneda) moneda;
-                pstmt.setDouble(2, cripto.getVolatilidad());
-                pstmt.setDouble(3, cripto.getStock());
-            }
-
-            pstmt.executeUpdate();
-            System.out.println("Moneda actualizada exitosamente.");
-        }
-    }
-
-    private void insertarCripto(Connection c, Criptomoneda criptomoneda) throws SQLException {
-        String sql = "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR, VOLATILIDAD, STOCK) VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-            pstmt.setString(1, String.valueOf(moneda.getTipo()));
-            pstmt.setString(2, moneda.getNombre());
-            pstmt.setString(3, moneda.getNomenclatura());
-            pstmt.setDouble(4, moneda.getValor_dolar());
-
-            if (esCripto) {
-                Criptomoneda cripto = (Criptomoneda) moneda;
-                pstmt.setDouble(5, cripto.getVolatilidad());
-                pstmt.setDouble(6, cripto.getStock());
-            }
-
-            pstmt.executeUpdate();
-            System.out.println("Moneda insertada exitosamente.");
-        }
-    }
+    /*
+     * private void actualizarMonedaCripto(Connection c, Moneda moneda) throws
+     * SQLException {
+     * String sql = esCripto
+     * ?
+     * "UPDATE MONEDA SET VALOR_DOLAR = ?, VOLATILIDAD = ?, STOCK = ? WHERE NOMENCLATURA = ?"
+     * : "UPDATE MONEDA SET VALOR_DOLAR = ? WHERE NOMENCLATURA = ?";
+     * 
+     * try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+     * pstmt.setDouble(1, moneda.getValor_dolar());
+     * 
+     * if (esCripto) {
+     * Criptomoneda cripto = (Criptomoneda) moneda;
+     * pstmt.setDouble(2, cripto.getVolatilidad());
+     * pstmt.setDouble(3, cripto.getStock());
+     * }
+     * 
+     * pstmt.executeUpdate();
+     * System.out.println("Moneda actualizada exitosamente.");
+     * }
+     * }
+     * 
+     * private void actualizarMonedaFiat(Connection c, Moneda moneda, boolean
+     * esCripto) throws SQLException {
+     * String sql = esCripto
+     * ?
+     * "UPDATE MONEDA SET VALOR_DOLAR = ?, VOLATILIDAD = ?, STOCK = ? WHERE NOMENCLATURA = ?"
+     * : "UPDATE MONEDA SET VALOR_DOLAR = ? WHERE NOMENCLATURA = ?";
+     * 
+     * try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+     * pstmt.setDouble(1, moneda.getValor_dolar());
+     * 
+     * if (esCripto) {
+     * Criptomoneda cripto = (Criptomoneda) moneda;
+     * pstmt.setDouble(2, cripto.getVolatilidad());
+     * pstmt.setDouble(3, cripto.getStock());
+     * }
+     * 
+     * pstmt.executeUpdate();
+     * System.out.println("Moneda actualizada exitosamente.");
+     * }
+     * }
+     * 
+     * private void insertarCripto(Connection c, Criptomoneda criptomoneda) throws
+     * SQLException {
+     * String sql =
+     * "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR, VOLATILIDAD, STOCK) VALUES (?, ?, ?, ?, ?, ?)"
+     * ;
+     * 
+     * try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+     * pstmt.setString(1, String.valueOf(moneda.getTipo()));
+     * pstmt.setString(2, moneda.getNombre());
+     * pstmt.setString(3, moneda.getNomenclatura());
+     * pstmt.setDouble(4, moneda.getValor_dolar());
+     * 
+     * if (esCripto) {
+     * Criptomoneda cripto = (Criptomoneda) moneda;
+     * pstmt.setDouble(5, cripto.getVolatilidad());
+     * pstmt.setDouble(6, cripto.getStock());
+     * }
+     * 
+     * pstmt.executeUpdate();
+     * System.out.println("Moneda insertada exitosamente.");
+     * }
+     * }
+     * 
+     * @Override
+     * public void generarMonedaCripto(Criptomoneda criptomoneda) {
+     * if (criptomoneda == null) {
+     * System.err.println("No ingreso una moneda");
+     * return;
+     * }
+     * try {
+     * Connection c =
+     * DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
+     * System.out.println("Opened database successfully");
+     * 
+     * // Verificar si la moneda ya existe; actualiza o inserta según sea el caso
+     * if (monedaExiste(c, criptomoneda.getNomenclatura())) {
+     * actualizarCripto(c, criptomoneda);
+     * } else {
+     * insertarCripto(c, criptomoneda);
+     * }
+     * } catch (SQLException e) {
+     * System.err.println(e.getClass().getName() + ": " + e.getMessage());
+     * System.exit(1);
+     * }
+     * }
+     * 
+     * @Override
+     * public void listarMonedas(boolean ordenarPorNomenclatura) {
+     * 
+     * List<Moneda> monedas = new LinkedList<>();
+     * try {
+     * Connection c =
+     * DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
+     * c.setAutoCommit(false);
+     * System.out.println("Opened database successfully");
+     * Statement stmt = c.createStatement();
+     * ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
+     * 
+     * while (rs.next()) {
+     * Moneda moneda;
+     * if (rs.getString("TIPO").charAt(0) == 'C') {
+     * moneda = new Criptomoneda(rs.getString("TIPO").charAt(0),
+     * rs.getString("NOMBRE"),
+     * rs.getString("NOMENCLATURA"), rs.getDouble("VALOR_DOLAR"),
+     * rs.getDouble("VOLATILIDAD"),
+     * rs.getDouble("STOCK"));
+     * } else {
+     * moneda = new Fiat(rs.getString("TIPO").charAt(0), rs.getString("NOMBRE"),
+     * rs.getString("NOMENCLATURA"), rs.getDouble("VALOR_DOLAR"));
+     * }
+     * monedas.add(moneda);
+     * }
+     * 
+     * if (ordenarPorNomenclatura) {
+     * Collections.sort(monedas, new ComparatorNomenclaturaMoneda());
+     * } else {
+     * Collections.sort(monedas, new ComparatorValorDolar());
+     * }
+     * for (Moneda act : monedas) {
+     * System.err.println(act.toString());
+     * }
+     * rs.close();
+     * stmt.close();
+     * c.close();
+     * } catch (Exception e) {
+     * System.err.println(e.getClass().getName() + ": " + e.getMessage());
+     * System.exit(1);
+     * }
+     * System.out.println("Operation done successfully");
+     * 
+     * }
+     */
 
     @Override
-    public void generarMonedaCripto(Criptomoneda criptomoneda) {
-        if (criptomoneda == null) {
-            System.err.println("No ingreso una moneda");
-            return;
-        }
-        try {
-            Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            System.out.println("Opened database successfully");
-
-            // Verificar si la moneda ya existe; actualiza o inserta según sea el caso
-            if (monedaExiste(c, criptomoneda.getNomenclatura())) {
-                actualizarCripto(c, criptomoneda);
-            } else {
-                insertarCripto(c, criptomoneda);
-            }
-        } catch (SQLException e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(1);
-        }
-    }
-
-    @Override
-    public void ListarMonedas(boolean ordenarPorNomenclatura) {
-
-        List<Moneda> monedas = new LinkedList<>();
-        try {
-            Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
-
-            while (rs.next()) {
-                Moneda moneda;
-                if (rs.getString("TIPO").charAt(0) == 'C') {
-                    moneda = new Criptomoneda(rs.getString("TIPO").charAt(0), rs.getString("NOMBRE"),
-                            rs.getString("NOMENCLATURA"), rs.getDouble("VALOR_DOLAR"), rs.getDouble("VOLATILIDAD"),
-                            rs.getDouble("STOCK"));
-                } else {
-                    moneda = new Fiat(rs.getString("TIPO").charAt(0), rs.getString("NOMBRE"),
-                            rs.getString("NOMENCLATURA"), rs.getDouble("VALOR_DOLAR"));
-                }
-                monedas.add(moneda);
-            }
-
-            if (ordenarPorNomenclatura) {
-                Collections.sort(monedas, new ComparatorNomenclaturaMoneda());
-            } else {
-                Collections.sort(monedas, new ComparatorValorDolar());
-            }
-            for (Moneda act : monedas) {
-                System.err.println(act.toString());
-            }
-            rs.close();
-            stmt.close();
-            c.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(1);
-        }
-        System.out.println("Operation done successfully");
-
-    }
-
-    @Override
-    public void GenerarStock() {
+    public void generarStock() {
 
         try {
             Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
@@ -211,23 +223,6 @@ public class MonedaDAOnew implements IMonedaDAO {
             System.exit(1);
         }
         System.out.println("Operation done successfully");
-
-    @Override
-    public void generarMoneda(Moneda moneda) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generarMoneda'");
-    }
-
-    @Override
-    public List<Moneda> listarMonedas() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ListarMonedas'");
-    }
-
-    @Override
-    public void generarStock() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'GenerarStock'");
     }
 
     @Override
@@ -276,5 +271,17 @@ public class MonedaDAOnew implements IMonedaDAO {
             System.exit(1);
         }
         System.out.println("Operation done successfully");
+    }
+
+    @Override
+    public void generarMoneda(Moneda moneda) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'generarMoneda'");
+    }
+
+    @Override
+    public List<Moneda> listarMonedas() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listarMonedas'");
     }
 }

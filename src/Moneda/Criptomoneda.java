@@ -32,6 +32,10 @@ public class Criptomoneda extends Moneda {
         this.stock = stock;
     }
 
+    public Criptomoneda(String nomenclatura) {
+        super(nomenclatura);
+    }
+
     /**
      * Obtiene el stock de la criptomoneda.
      * 
