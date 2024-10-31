@@ -14,7 +14,7 @@ public interface IMonedaDAO {
 
     void borrarMoneda(String nomenclatura);
 
-    boolean VerificarStock(Connection c, String nomenclatura, double cantidad);
+    boolean VerificarStock(Connection c, String nomenclatura, double cantidad); //funciona para c o f
 
     public double equivalenteDolar(Connection c, String nomenclatura); // funciona para c o f
 

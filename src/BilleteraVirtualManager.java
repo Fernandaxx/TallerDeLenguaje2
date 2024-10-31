@@ -1,6 +1,3 @@
-import java.util.List;
-import java.util.Scanner;
-
 import Activo.ActivoCripto;
 import Activo.ActivoCriptoDAO;
 import Activo.ActivoFiat;
@@ -10,11 +7,16 @@ import Comparadores.ComparadorNomenclaturaActivoCripto;
 import Comparadores.ComparadorNomenclaturaActivoFiat;
 import Comparadores.ComparadorNomenclaturaStock;
 import Comparadores.ComparatorCantidadActivo;
+import Comparadores.ComparatorNomenclaturaMoneda;
+import Comparadores.ComparatorValorDolar;
 import Moneda.Criptomoneda;
 import Moneda.Fiat;
+import Moneda.Moneda;
 import Moneda.MonedaDAOnew;
 import Moneda.Stock;
 import Transaccion.GestorSwap;
+import java.util.List;
+import java.util.Scanner;
 
 public class BilleteraVirtualManager {
     private ActivoCriptoDAO activoCriptoOp = new ActivoCriptoDAO();
@@ -206,6 +208,30 @@ public class BilleteraVirtualManager {
             System.out.println("Operación cancelada.");
         }
     }
+    private void listarMonedas(Scanner s) {
+                // boolean esCripto = false;
+                boolean ordenarPorNomenclatura = false;
+                System.out.println("===== Listar Monedas =====");
+                System.out.println("¿Desea ordenar por nomenclatura? (y/n)");
+                String ordenar = s.next();
+                if (ordenar.equals("y")) {
+                        ordenarPorNomenclatura = true;
+                } else if (ordenar.equals("n")) {
+                        ordenarPorNomenclatura = false;
+                } else {
+                        System.out.println("Opción no válida. Debe ser 'y' (sí) o 'n' (no).");
+                        return;
+                }
+                List<Moneda> lista = monedaOp.listarMonedas();
+                if (ordenarPorNomenclatura){
+                    lista.sort(new ComparatorNomenclaturaMoneda());
+                }
+                else
+                lista.sort(new ComparatorValorDolar());
+                for (Moneda act : lista){
+                    System.out.println(act.toString());
+                }
+        }
 
     public void iniciar() {
         Scanner s = new Scanner(System.in);
