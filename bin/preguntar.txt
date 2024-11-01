@@ -1,0 +1,27 @@
+Estamos siguiendo el patron dao correctamente?
+separar activo cripto de fiat- o seguir con boolean esCripto
+como Activo es abstracta use Obtenernomenclatura para saber independientemente de la moneda
+verificar stock tanto la cripto envio y la recepcion se verifican en mis activos? o la recepcion es de la billetera/moneda
+comparator nomenclatura para activo y moneda, se pueden generalizar?
+esta bien preguntar si confirma en el menu y llamar al metodo o es en el metodo
+
+
+  private boolean nomenclaturaExiste(Connection c, String nomenclatura) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM MONEDA WHERE NOMENCLATURA = ? ";
+        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+            pstmt.setString(1, nomenclatura);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
+        }
+    }
+
+
+eliminar stock de la Moneda
+
+aclarar que se carga criptomoneda con solo nomenclatura para simplificar
+nos gustaria separar stock de Moneda 
+nomenclaturaspermitidas -> se pueden agregar mas si la billetera crece por que es una constante
+aclarar que valor en dolar es metodo en uml y variable aca
+algunos retornos de error decimos cambiarlos a ultima hora para no imprimir en las clases dao
+
