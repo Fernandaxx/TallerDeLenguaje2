@@ -39,7 +39,6 @@ public class BilleteraVirtualManager {
         System.out.println("8. Simular SWAP entre Criptomonedas");
         System.out.println("9. Mostrar menú detallado");
         System.out.println("0. Salir");
-        System.out.print("\nSeleccione una opción: ");
     }
 
     private static void printMenuDetallado() {
@@ -75,7 +74,6 @@ public class BilleteraVirtualManager {
         System.out.println("\n0. Salir");
         System.out.println("   - Finaliza la ejecución del programa");
 
-        System.out.print("\nSeleccione una opción: ");
     }
 
     private void generarCompra(Scanner s) {

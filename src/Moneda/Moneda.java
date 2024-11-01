@@ -1,12 +1,8 @@
 package Moneda;
-///////////////------FALTAN COMENTARIOS-------/////////////////
-
-//////////////////////////////////////////////////////////////
 
 /**
  * La clase abstracta Moneda modela una moneda en el sistema Billetera
- * Virtual, con su
- * volatilidad y el stock de la misma.
+ * Virtual.
  * 
  * @author Grupo13
  * @version 2.0

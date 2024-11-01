@@ -4,9 +4,26 @@ import java.sql.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-//Borrar la anterior y el new
+/**
+ * La clase MonedaDAO es responsable de realizar operaciones de acceso a datos
+ * para las monedas (Fiat y Criptomonedas) en la base de datos de la Billetera
+ * Virtual. Proporciona métodos para generar, listar, actualizar y eliminar
+ * monedas, así como verificar su existencia y stock.
+ * 
+ * @author Grupo13
+ * @version 2.0
+ * @since 2024
+ */
 public class MonedaDAO implements IMonedaDAO {
 
+    /**
+     * Genera una nueva moneda (Fiat o Criptomoneda) en la base de datos.
+     *
+     * Si la criptomoneda ya existe, se actualizará su stock.
+     *
+     * @param moneda La moneda a generar.
+     * @return true si la operación fue exitosa, false en caso contrario.
+     */
     @Override
     public boolean generarMoneda(Moneda moneda) {
         boolean exito = true;
@@ -29,9 +46,15 @@ public class MonedaDAO implements IMonedaDAO {
             System.exit(1);
         }
         return exito;
-
     }
 
+    /**
+     * Verifica si una moneda existe en la base de datos.
+     *
+     * @param c            La conexión a la base de datos.
+     * @param nomenclatura La nomenclatura de la moneda a verificar.
+     * @return true si la moneda existe, false en caso contrario.
+     */
     @Override
     public boolean monedaExiste(Connection c, String nomenclatura) {
         boolean existe = false;
@@ -47,9 +70,16 @@ public class MonedaDAO implements IMonedaDAO {
         return existe;
     }
 
+    /**
+     * Actualiza el stock de una criptomoneda existente en la base de datos.
+     *
+     * @param c            La conexión a la base de datos.
+     * @param stock        La cantidad de stock a agregar.
+     * @param nomenclatura La nomenclatura de la moneda a actualizar.
+     */
     public void actualizarMoneda(Connection c, double stock, String nomenclatura) {
         try {
-            String sql = "UPDATE MONEDA SET  STOCK = STOCK + ? WHERE NOMENCLATURA = ?";
+            String sql = "UPDATE MONEDA SET STOCK = STOCK + ? WHERE NOMENCLATURA = ?";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setDouble(1, stock);
             pstmt.setString(2, nomenclatura);
@@ -60,6 +90,13 @@ public class MonedaDAO implements IMonedaDAO {
         }
     }
 
+    /**
+     * Inserta una moneda Fiat en la base de datos.
+     *
+     * @param c    La conexión a la base de datos.
+     * @param fiat La moneda Fiat a insertar.
+     * @throws SQLException si ocurre un error al ejecutar la consulta.
+     */
     private void insertarFiat(Connection c, Fiat fiat) throws SQLException {
         String sql = "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR) VALUES (?, ?, ?, ?)";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -68,10 +105,16 @@ public class MonedaDAO implements IMonedaDAO {
             pstmt.setString(3, fiat.getNomenclatura());
             pstmt.setDouble(4, fiat.getValor_dolar());
             pstmt.executeUpdate();
-
         }
     }
 
+    /**
+     * Inserta una Criptomoneda en la base de datos.
+     *
+     * @param c      La conexión a la base de datos.
+     * @param cripto La Criptomoneda a insertar.
+     * @throws SQLException si ocurre un error al ejecutar la consulta.
+     */
     private void insertarCripto(Connection c, Criptomoneda cripto) throws SQLException {
         String sql = "INSERT INTO MONEDA (TIPO, NOMBRE, NOMENCLATURA, VALOR_DOLAR, VOLATILIDAD, STOCK) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
@@ -83,9 +126,16 @@ public class MonedaDAO implements IMonedaDAO {
             pstmt.setDouble(6, cripto.getStock());
             pstmt.executeUpdate();
         }
-
     }
 
+    /**
+     * Verifica si hay suficiente stock disponible para una moneda dada.
+     *
+     * @param c            La conexión a la base de datos.
+     * @param nomenclatura La nomenclatura de la moneda.
+     * @param cantidad     La cantidad a verificar.
+     * @return true si hay suficiente stock, false en caso contrario.
+     */
     @Override
     public boolean VerificarStock(Connection c, String nomenclatura, double cantidad) {
         boolean suficiente = false;
@@ -94,9 +144,11 @@ public class MonedaDAO implements IMonedaDAO {
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, nomenclatura);
             ResultSet rs = pstmt.executeQuery();
-            double disponible = rs.getDouble("STOCK");
-            if (disponible >= cantidad)
-                suficiente = true;
+            if (rs.next()) {
+                double disponible = rs.getDouble("STOCK");
+                if (disponible >= cantidad)
+                    suficiente = true;
+            }
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -104,6 +156,13 @@ public class MonedaDAO implements IMonedaDAO {
         return suficiente;
     }
 
+    /**
+     * Obtiene el valor en dólares de una moneda dada.
+     *
+     * @param c            La conexión a la base de datos.
+     * @param nomenclatura La nomenclatura de la moneda.
+     * @return El valor en dólares de la moneda, o -1 si no se encuentra.
+     */
     @Override
     public double equivalenteDolar(Connection c, String nomenclatura) {
         double valor = -1;
@@ -112,7 +171,9 @@ public class MonedaDAO implements IMonedaDAO {
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, nomenclatura);
             ResultSet rs = pstmt.executeQuery();
-            valor = rs.getDouble("VALOR_DOLAR");
+            if (rs.next()) {
+                valor = rs.getDouble("VALOR_DOLAR");
+            }
         } catch (SQLException e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(1);
@@ -120,13 +181,16 @@ public class MonedaDAO implements IMonedaDAO {
         return valor;
     }
 
+    /**
+     * Lista todas las monedas disponibles en la base de datos.
+     *
+     * @return Una lista de monedas (Fiat y Criptomonedas).
+     */
     @Override
     public List<Moneda> listarMonedas() {
-
         List<Moneda> monedas = new LinkedList<>();
         try {
             Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            c.setAutoCommit(false);
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
             while (rs.next()) {
@@ -151,12 +215,17 @@ public class MonedaDAO implements IMonedaDAO {
         return monedas;
     }
 
+    /**
+     * Genera un stock aleatorio para las criptomonedas en la base de datos
+     * y devuelve un informe de las actualizaciones realizadas.
+     *
+     * @return Una lista de strings con el informe de actualización de stock.
+     */
     @Override
     public List<String> generarStock() {
-        List<String> informe = new LinkedList<String>();
+        List<String> informe = new LinkedList<>();
         try {
             Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            c.setAutoCommit(false);
             String sql = "UPDATE MONEDA SET STOCK = ? WHERE NOMENCLATURA = ?";
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM MONEDA");
@@ -181,6 +250,11 @@ public class MonedaDAO implements IMonedaDAO {
         return informe;
     }
 
+    /**
+     * Lista el stock actual de las criptomonedas en la base de datos.
+     *
+     * @return Una lista de objetos Stock que contienen la nomenclatura y el stock.
+     */
     @Override
     public List<Stock> listarStock() {
         Connection c = null;
@@ -206,18 +280,21 @@ public class MonedaDAO implements IMonedaDAO {
         return stocks;
     }
 
+    /**
+     * Elimina una moneda de la base de datos según su nomenclatura.
+     *
+     * @param nomenclatura La nomenclatura de la moneda a eliminar.
+     */
     @Override
     public void borrarMoneda(String nomenclatura) {
         Connection c = null;
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-
             String sql = "DELETE FROM MONEDA WHERE NOMENCLATURA = ? ";
             PreparedStatement pstmt = c.prepareStatement(sql);
             pstmt.setString(1, nomenclatura);
             int filasAfectadas = pstmt.executeUpdate();
             if (filasAfectadas == 0) {
-
                 throw new RuntimeException("No se encontró el activo cripto: " + nomenclatura);
             }
             pstmt.close();
@@ -226,7 +303,6 @@ public class MonedaDAO implements IMonedaDAO {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(1);
         }
-        System.out.println("Operation done successfully");
+        System.out.println("Operación realizada con éxito");
     }
-
 }

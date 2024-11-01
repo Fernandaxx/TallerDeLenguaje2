@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * Esta clase deberá ser extendida por tipos específicos de transacciones.
  * 
  * @author Grupo13
- * @version 1.0
+ * @version 2.0
  * @since 2024
  */
 public abstract class Transaccion {
