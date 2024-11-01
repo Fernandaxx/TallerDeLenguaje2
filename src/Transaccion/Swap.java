@@ -11,8 +11,8 @@ public class Swap extends Transaccion {
     private double cantidadRecepcion;
 
     public Swap(Criptomoneda criptoEnvio, double cantidad, Criptomoneda criptoRecepcion, double cantidadRecepcion,
-            LocalDateTime fecha) {
-        super(fecha);
+            LocalDateTime fecha, String resumen) {
+        super(fecha, resumen);
         this.criptoEnvio = criptoEnvio;
         this.cantidad = cantidad;
         this.criptoRecepcion = criptoRecepcion;
@@ -23,11 +23,6 @@ public class Swap extends Transaccion {
         this.criptoEnvio = criptoEnvio;
         this.cantidad = cantidad;
         this.criptoRecepcion = criptoRecepcion;
-    }
-
-    @Override
-    public void obtenerComision() {
-
     }
 
     public Criptomoneda getCriptoEnvio() {
@@ -60,11 +55,6 @@ public class Swap extends Transaccion {
 
     public void setCantidadRecepcion(double cantidadRecepcion) {
         this.cantidadRecepcion = cantidadRecepcion;
-    }
-
-    @Override
-    public void opcionesDemora() {
-
     }
 
 }

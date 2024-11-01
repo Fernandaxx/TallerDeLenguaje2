@@ -4,7 +4,10 @@ import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import Moneda.MonedaDAO;
+
 public class ActivoCriptoDAO implements IActivoCriptoDAO {
+    private MonedaDAO monedaDAO = new MonedaDAO();
 
     @Override
     public boolean generarActivoCripto(ActivoCripto activoCripto) {
@@ -18,7 +21,7 @@ public class ActivoCriptoDAO implements IActivoCriptoDAO {
         try {
             c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
             // Verificar si la nomenclatura existe en la tabla MONEDA
-            if (!nomenclaturaExiste(c, activoCripto.getCripto().getNomenclatura())) {
+            if (!monedaDAO.monedaExiste(c, activoCripto.getCripto().getNomenclatura())) {
                 return exito;
             }
             // Verificar si el activo ya existe y actualizarlo, o crear uno nuevo
@@ -36,17 +39,6 @@ public class ActivoCriptoDAO implements IActivoCriptoDAO {
         }
         return exito;
 
-    }
-
-    /// cambia por monedaExiste en MonedaDao
-    private boolean nomenclaturaExiste(Connection c, String nomenclatura) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM MONEDA WHERE NOMENCLATURA = ? ";
-        try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-            pstmt.setString(1, nomenclatura);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.next() && rs.getInt(1) > 0;
-            }
-        }
     }
 
     public boolean activoExiste(Connection c, String nomenclatura) throws SQLException {
@@ -68,7 +60,7 @@ public class ActivoCriptoDAO implements IActivoCriptoDAO {
         }
     }
 
-    private void insertarActivo(Connection c, ActivoCripto activo) throws SQLException {
+    public void insertarActivo(Connection c, ActivoCripto activo) throws SQLException {
         String sql = "INSERT INTO ACTIVO_CRIPTO (NOMENCLATURA, CANTIDAD) VALUES (?, ?)";
         try (PreparedStatement pstmt = c.prepareStatement(sql)) {
             pstmt.setString(1, activo.getCripto().getNomenclatura());

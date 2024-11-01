@@ -2,40 +2,48 @@ package Transaccion;
 
 import Activo.ActivoCripto;
 import Activo.ActivoCriptoDAO;
+import Activo.ActivoFiat;
+
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.Scanner;
 
 import Activo.ActivoFiatDAO;
 import Moneda.Criptomoneda;
 import Moneda.Fiat;
 import Moneda.MonedaDAO;
 
-//hay que arreglar porque ingresa por teclado y modifica la base en la misma clase
 public class GestorCompra {
-    private ActivoFiatDAO activoFiatDAO;
-    private ActivoCriptoDAO activoCriptoDAO;
-    private TransaccionDAO transaccionDAO;
-    private MonedaDAO monedaDAO;
+    private ActivoFiatDAO activoFiatDAO = new ActivoFiatDAO();
+    private ActivoCriptoDAO activoCriptoDAO = new ActivoCriptoDAO();
+    private TransaccionDAO transaccionDAO = new TransaccionDAO();
+    private MonedaDAO monedaDAO = new MonedaDAO();
 
-    private void generarCompra(Connection c, Compra compra) throws SQLException {
-
-        ActivoCripto activo = new ActivoCripto(compra.getCantidad(), compra.getCripto().getNomenclatura());
-
-        if (!activoCriptoDAO.activoExiste(c, compra.getCripto().getNomenclatura())) {
-            activoCriptoDAO.generarActivoCripto(activo);
-        } else {
-            activoCriptoDAO.actualizarActivo(c, activo);
+    public void generarCompra(Compra compra) {
+        Connection c = null;
+        try {
+            c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
+            ActivoCripto activoCripto = new ActivoCripto(compra.getCantidad(), compra.getCripto().getNomenclatura());
+            ActivoFiat activoFiat = new ActivoFiat(-compra.getCantidadFiat(), compra.getFiat().getNomenclatura());
+            if (!activoCriptoDAO.activoExiste(c, compra.getCripto().getNomenclatura())) {
+                activoCriptoDAO.generarActivoCripto(activoCripto);
+            } else {
+                activoCriptoDAO.actualizarActivo(c, activoCripto);
+            }
+            monedaDAO.actualizarMoneda(c, -compra.getCantidad(), compra.getCripto().getNomenclatura());
+            activoFiatDAO.actualizarActivo(c, activoFiat);
+            transaccionDAO.registrarTransaccion(c, compra);
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
-        monedaDAO.actualizarMoneda(c, -compra.getCantidad(), compra.getCripto().getNomenclatura());
 
     }
 
-    public void simularCompra(Criptomoneda cripto, Fiat fiat, double cantidad) {
+    public Compra simularCompra(Criptomoneda cripto, Fiat fiat, double cantidad) {
+        Compra compra = new Compra();
         Connection c = null;
-        Scanner s = new Scanner(System.in);
         try {
-            c = DriverManager.getConnection("jdbc:sqlite:test.BilleteraVirtual.db");
+            c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
 
             // verifica si la moneda existe en la billetera
             if (!monedaDAO.monedaExiste(c, cripto.getNomenclatura())
@@ -46,7 +54,6 @@ public class GestorCompra {
             if (!activoFiatDAO.verificarCantidad(c, fiat.getNomenclatura(), cantidad)) {
                 throw new Exception("Saldo insuficiente");
             }
-
             double equivalenteDolarCripto = monedaDAO.equivalenteDolar(c, cripto.getNomenclatura());
             double equivalenteDolarFiat = monedaDAO.equivalenteDolar(c, fiat.getNomenclatura());
 
@@ -55,27 +62,13 @@ public class GestorCompra {
             if (!monedaDAO.VerificarStock(c, cripto.getNomenclatura(), equivalente)) {
                 throw new Exception("No hay suficiente stock de " + cripto.getNomenclatura());
             }
+            compra = new Compra(LocalDateTime.now(), fiat, cripto, equivalente);
 
-            System.out.println("\nResumen de criptomoneda a comprar:");
-            System.out.println("Cantidad a comprar de " + cripto.getNomenclatura() + ": " + equivalente);
-            System.out.println("Cantidad a gastar de " + fiat.getNomenclatura() + ": " + cantidad);
-
-            System.out.println("\n¿Está seguro que desea comprar este activo? (y/n)");
-            String confirmacion = s.nextLine();
-            if (confirmacion.equalsIgnoreCase("y")) {
-                Compra compra = new Compra(LocalDateTime.now(), fiat.getNomenclatura(), cripto.getNomenclatura(),
-                        cantidad);
-                generarCompra(c, compra);
-                System.out.println("Moneda comprada exitosamente");
-            } else {
-                System.out.println("Operación cancelada");
-            }
-
+            c.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Opened database successfully");
-        s.close();
+        return compra;
     }
 }

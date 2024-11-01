@@ -21,10 +21,6 @@ public class Criptomoneda extends Moneda {
     public Criptomoneda() {
     }
 
-    /**
-     * Constructor de la clase Criptomoneda.
-     */
-
     public Criptomoneda(char tipo, String nombre, String nomenclatura, double valor_dolar, double volatilidad,
             double stock) {
         super(tipo, nombre, nomenclatura, valor_dolar);

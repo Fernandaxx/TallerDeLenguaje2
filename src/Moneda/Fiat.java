@@ -17,12 +17,12 @@ public class Fiat extends Moneda {
     public Fiat() {
     }
 
-    /**
-     * Constructor de la clase Fiat.
-     */
-
     public Fiat(char tipo, String nombre, String nomenclatura, double valor_dolar) {
         super(tipo, nombre, nomenclatura, valor_dolar);
+    }
+
+    public Fiat(String nomenclatura) {
+        super(nomenclatura);
     }
 
 }

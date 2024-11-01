@@ -13,75 +13,62 @@ public class GestorSwap {
     private MonedaDAO monedaDAO = new MonedaDAO();
     private TransaccionDAO transaccionDAO = new TransaccionDAO();
 
-    public void simularSwap(Criptomoneda criptoInicial, double cantidad, Criptomoneda criptoFinal) {
-        Connection c = null;
-        try {
-            c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            System.out.println("Opened database successfully");
-            if (!activoDAO.activoExiste(c, criptoInicial.getNomenclatura())
-                    || !activoDAO.verificarCantidad(c, criptoInicial.getNomenclatura(), cantidad)) {
-                throw new RuntimeException("No posee cantidad suficiente de " + criptoInicial.getNomenclatura());
+    public Result simularSwap(Criptomoneda criptoInicial, double cantidad, Criptomoneda criptoFinal,
+            double cantidadFinal) {
+        Result r = new Result(true, "Operacion exitosa");
+        try (Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db")) {
 
+            if (!activoDAO.activoExiste(c, criptoInicial.getNomenclatura())) {
+                return new Result(false, "No posee " + criptoInicial.getNomenclatura() + " en sus activos");
             }
-
-            // Calcular el equivalente en la cripto destino
-            double cantidadFinal = valorFinalSwap(criptoInicial, cantidad, criptoFinal);
-            if (!monedaDAO.VerificarStock(c, criptoFinal.getNomenclatura(), cantidadFinal))
-                ;
-
-            // 4. Crear objeto Swap para representar la transacción
-            Swap swap = new Swap(
-                    criptoInicial,
+            if (!activoDAO.activoExiste(c, criptoFinal.getNomenclatura())) {
+                activoDAO.generarActivoCripto(new ActivoCripto(0, criptoFinal.getNomenclatura()));
+            }
+            if (!activoDAO.verificarCantidad(c, criptoInicial.getNomenclatura(), cantidad)) {
+                return new Result(false, "No posee cantidad suficiente de " + criptoInicial.getNomenclatura());
+            }
+            if (!monedaDAO.VerificarStock(c, criptoFinal.getNomenclatura(), cantidadFinal)) {
+                return new Result(false, "No hay suficiente stock disponible de " + criptoFinal.getNomenclatura());
+            }
+            String resumen = String.format(
+                    "SWAP: %.2f %s por %.2f %s",
                     cantidad,
-                    criptoFinal,
+                    criptoInicial.getNomenclatura(),
                     cantidadFinal,
-                    LocalDateTime.now());
-            // 5. Realizar la transacción
-            realizarSwap(c, swap);
-            c.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": este error" + e.getMessage());
-            System.exit(0);
+                    criptoFinal.getNomenclatura());
+            Swap swap = new Swap(criptoInicial, cantidad, criptoFinal, cantidadFinal, LocalDateTime.now(), resumen);
+            realizarSwap(c, swap, r);
+        } catch (SQLException e) {
+            return new Result(false, "Error en la conexión a la base de datos: " + e.getMessage());
         }
-        System.out.println("Opened database successfully");
+        return r;
     }
 
-    private void realizarSwap(Connection c, Swap swap) throws Exception {
+    private void realizarSwap(Connection c, Swap swap, Result res) {
         try {
-            // Actualizar saldo de cripto origen (restar)
+
             activoDAO.actualizarActivo(c,
                     new ActivoCripto(-swap.getCantidad(), swap.getCriptoEnvio().getNomenclatura()));
 
-            // Actualizar saldo de cripto destino (sumar)
+            monedaDAO.actualizarMoneda(c, -swap.getCantidadRecepcion(), swap.getCriptoRecepcion().getNomenclatura());
+
             activoDAO.actualizarActivo(c,
                     new ActivoCripto(swap.getCantidadRecepcion(), swap.getCriptoRecepcion().getNomenclatura()));
-            // 3. Registrar la transacción
-            String descripcion = String.format(
-                    "SWAP: %f %s por %f %s",
-                    swap.getCantidad(),
-                    swap.getCriptoEnvio(),
-                    swap.getCantidadRecepcion(),
-                    swap.getCriptoRecepcion());
-
-            transaccionDAO.registrarTransaccion(swap, descripcion);
-            System.out.println("Swap realizado exitosamente");
+            transaccionDAO.registrarTransaccion(c, swap);
 
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ":" + e.getMessage());
-            System.exit(1);
+            new Result(false, e.getClass().getName() + ":" + e.getMessage());
+
         }
     }
 
     public double valorFinalSwap(Criptomoneda criptoInicial, double cantidad, Criptomoneda criptoFinal) {
-        try {
-            Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
+        try (Connection c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db")) {
             double valorCripto1 = monedaDAO.equivalenteDolar(c, criptoInicial.getNomenclatura());
             double valorCripto2 = monedaDAO.equivalenteDolar(c, criptoFinal.getNomenclatura());
-            double cantidadFinal = (cantidad * valorCripto1) / valorCripto2;
-            return cantidadFinal;
+            return (cantidad * valorCripto1) / valorCripto2;
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            throw new RuntimeException("Error al calcular valor final del swap: " + e.getMessage());
         }
-        return -1;
     }
 }

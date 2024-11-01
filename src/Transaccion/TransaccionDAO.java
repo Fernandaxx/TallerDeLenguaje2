@@ -5,22 +5,17 @@ import java.time.LocalDateTime;
 
 public class TransaccionDAO implements ITransaccionDAO {
 
-    public void registrarTransaccion(Transaccion transaccion, String resumen) {
-        Connection c = null;
+    public void registrarTransaccion(Connection c, Transaccion transaccion) {
         try {
-            c = DriverManager.getConnection("jdbc:sqlite:BilleteraVirtual.db");
-            System.out.println("Opened database successfully");
             String sql = "INSERT INTO TRANSACCION (RESUMEN, FECHA_HORA) VALUES (?, ?)";
-            try (PreparedStatement pstmt = c.prepareStatement(sql)) {
-                pstmt.setString(1, resumen);
-                Timestamp fecha = Timestamp.valueOf((transaccion.getFecha()));
-                pstmt.setTimestamp(2, fecha);
-                pstmt.executeUpdate();
 
+            try (PreparedStatement pstmt = c.prepareStatement(sql)) {
+                pstmt.setString(1, transaccion.getResumen());
+                pstmt.setTimestamp(2, Timestamp.valueOf(transaccion.getFecha()));
+                pstmt.executeUpdate();
             }
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(1);
         }
     }
 
